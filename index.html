@@ -1,0 +1,338 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Ryan Els — Websites you can update yourself</title>
+  <meta name="description" content="Fast, modern websites for small businesses—with simple editing built in, so you can update prices, stock and photos yourself." />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@700;800&family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@500;600;700;800&family=Nunito:wght@600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/styles.css" />
+</head>
+<body>
+  <header class="nav">
+    <div class="wrap nav-row">
+      <a class="brand" href="#top">Ryan Els<span class="brand-dot">.</span></a>
+      <nav class="nav-links" aria-label="Main navigation">
+        <a href="#how">How it works</a>
+        <a href="#example">Real example</a>
+        <a class="button wa-link" href="#">Let's talk <span class="arrow">→</span></a>
+      </nav>
+    </div>
+  </header>
+
+  <main id="top">
+    <section class="hero">
+      <div class="wrap hero-grid hero-grid-simple">
+        <div class="hero-copy">
+          <div class="availability">Taking on new projects</div>
+          <h1>Your website.<br><span>Yours to edit.</span></h1>
+          <p class="hero-lead">I build clean, fast websites for small businesses—with a simple way for you to change prices, stock and photos the moment you need to.</p>
+          <div class="hero-actions">
+            <a class="button wa-link" href="#">Tell me about your business <span class="arrow">→</span></a>
+            <a class="text-link" href="#how">See how it works</a>
+          </div>
+          <p class="micro">Based in South Africa · Usually replies the same day</p>
+        </div>
+        <a class="hero-demo-link" href="#live-demos" aria-label="See four real Khaya Kos website demonstrations">
+          <span>Four real website moments</span>
+          <strong>Scroll to watch them happen</strong>
+          <i>↓</i>
+        </a>
+      </div>
+    </section>
+
+    <div class="trust-line">
+      <div class="wrap trust-row">
+        <span><i class="tick">✓</i> Designed phone-first</span>
+        <span><i class="tick">✓</i> Easy self-editing</span>
+        <span><i class="tick">✓</i> No page-builder bloat</span>
+        <span><i class="tick">✓</i> Personal support</span>
+      </div>
+    </div>
+
+    <section class="demo-stories" id="live-demos" aria-labelledby="demo-stories-title">
+      <div class="wrap demo-stories-intro">
+        <div class="eyebrow">A real website in motion</div>
+        <h2 id="demo-stories-title">Watch the change. See it go live.</h2>
+        <p>These demos recreate the mobile owner and visitor experience from Khaya Kos. Each one starts when it enters the screen.</p>
+      </div>
+
+      <article class="demo-chapter demo-chapter-photo" data-demo-chapter="photo">
+        <div class="wrap chapter-grid">
+          <div class="chapter-copy">
+            <span class="chapter-number">01 · ADD A PRODUCT</span>
+            <h2>Add it once. Watch it appear.</h2>
+            <p>From a blank product card to a finished listing—photo, crop, name, description and price—all added by the owner from her phone.</p>
+            <div class="chapter-status" aria-live="polite"><i></i><span data-role="status">Waiting for this demo to enter view…</span></div>
+            <button class="replay-button" type="button" data-role="replay">↻ Replay this demo</button>
+          </div>
+
+          <div class="chapter-visual dual-phone-visual">
+            <div class="phone-stage owner-stage">
+              <div class="phone-shadow"></div>
+              <div class="phone chapter-phone">
+                <div class="island"></div>
+                <div class="phone-screen">
+                  <div class="screen-bar"><span>9:41</span><span>5G&nbsp;&nbsp;●</span></div>
+                  <div class="owner-mobile" data-role="owner-mobile">
+                    <header class="owner-mobile-nav">
+                      <img src="assets/khaya/favicon.svg" alt="">
+                      <strong>Owner edit mode</strong>
+                      <button type="button" data-role="exit-edit" tabindex="-1">Exit edit mode</button>
+                    </header>
+                    <div class="owner-edit-banner"><i></i><strong>Adding a new product</strong><span>Every finished edit publishes live</span></div>
+                    <div class="owner-mobile-content">
+                      <article class="owner-product-card">
+                        <span class="owner-new-ribbon">New Item</span>
+                        <button class="owner-delete" type="button" tabindex="-1" aria-label="Delete new item">×</button>
+                        <div class="owner-product-photo">
+                          <img data-role="owner-image" src="assets/khaya/moist-chocolate-cake.jpeg" alt="Moist Chocolate Cake" hidden>
+                          <div class="owner-photo-placeholder" data-role="owner-placeholder"><span>📷</span><strong>Add a photo</strong></div>
+                          <button type="button" data-role="change-photo" tabindex="-1" aria-label="Add or change product photo"><span>📷</span></button>
+                        </div>
+                        <label>Price (rand)<input data-role="owner-price-field" value="0" readonly tabindex="-1"></label>
+                        <label>Product name<input data-role="owner-name-field" value="New Item" readonly tabindex="-1"></label>
+                        <label>Description<textarea data-role="owner-description-field" readonly tabindex="-1">Add a short description here.</textarea></label>
+                      </article>
+                    </div>
+                    <div class="photo-source-sheet" data-role="photo-sheet" hidden>
+                      <strong>Add a product photo</strong>
+                      <button type="button" tabindex="-1"><span>●</span> Take Photo</button>
+                      <button type="button" data-role="choose-photo" tabindex="-1"><span>▧</span> Choose from Photo Library</button>
+                      <small>Cancel</small>
+                    </div>
+                    <div class="photo-crop-modal" data-role="crop-modal" hidden>
+                      <span class="crop-editor-eyebrow">Owner photo editor</span>
+                      <strong>Frame your product photo</strong>
+                      <p>Keep the product inside the square. Drag to reposition, then zoom if needed.</p>
+                      <div class="crop-canvas"><img data-role="crop-image" src="assets/khaya/moist-chocolate-cake.jpeg" alt="Moist Chocolate Cake crop preview"><span></span></div>
+                      <b class="crop-zoom-label">Zoom</b>
+                      <div class="crop-controls"><button type="button" tabindex="-1">−</button><i><b data-role="zoom-level"></b></i><button type="button" tabindex="-1">+</button></div>
+                      <small class="crop-hint">Drag to reposition. Pinch or use the zoom control to resize.</small>
+                      <div class="crop-actions"><button type="button" tabindex="-1">Cancel</button><button type="button" data-role="use-photo" tabindex="-1">Use this photo</button></div>
+                    </div>
+                  </div>
+                  <div class="khaya-visitor owner-finished-view" data-role="owner-finished-view" hidden>
+                    <header class="khaya-nav"><span class="khaya-home"><img src="assets/khaya/favicon.svg" alt=""></span><span class="khaya-brand"><strong>Khaya Kos</strong><small>Gazebo Valley</small></span><span class="khaya-menu" aria-hidden="true"><i></i><i></i><i></i></span></header>
+                    <section class="khaya-menu-view"><div class="khaya-heading"><span>Available to order all week</span><strong>The Full Menu</strong><p>Live updates appear here instantly.</p></div><article class="khaya-card live-new-item has-photo has-name has-price has-description"><div class="khaya-card-photo"><img src="assets/khaya/moist-chocolate-cake.jpeg" alt="Moist Chocolate Cake"><h3>Moist Chocolate Cake</h3></div><div class="khaya-card-body"><p class="visitor-live-description">Rich, moist chocolate cake layered with silky chocolate icing.</p><div class="khaya-card-footer"><span class="khaya-price visitor-live-price">R200</span><span class="khaya-like"><span>♡</span><b>0</b></span></div></div></article></section>
+                  </div>
+                  <div class="screen-home"></div>
+                </div>
+              </div>
+              <span class="phone-label" data-role="owner-label">Owner edit mode</span>
+            </div>
+
+            <div class="phone-stage visitor-stage">
+              <div class="phone-shadow"></div>
+              <div class="phone chapter-phone">
+                <div class="island"></div>
+                <div class="phone-screen">
+                  <div class="screen-bar"><span>9:41</span><span>5G&nbsp;&nbsp;●</span></div>
+                  <div class="khaya-visitor">
+                    <header class="khaya-nav"><span class="khaya-home"><img src="assets/khaya/favicon.svg" alt=""></span><span class="khaya-brand"><strong>Khaya Kos</strong><small>Gazebo Valley</small></span><span class="khaya-menu" aria-hidden="true"><i></i><i></i><i></i></span></header>
+                    <section class="khaya-menu-view">
+                      <div class="khaya-heading"><span>Available to order all week</span><strong>The Full Menu</strong><p>Live updates appear here instantly.</p></div>
+                      <article class="khaya-card live-new-item" data-role="visitor-card">
+                        <div class="khaya-card-photo" data-role="visitor-photo">
+                          <div class="visitor-photo-placeholder" data-role="visitor-placeholder"><i></i><span>New product loading…</span></div>
+                          <img data-role="visitor-image" src="assets/khaya/moist-chocolate-cake.jpeg" alt="Moist Chocolate Cake" hidden>
+                          <h3 data-role="visitor-name">New Item</h3>
+                        </div>
+                        <div class="khaya-card-body"><p class="visitor-live-description" data-role="visitor-description">Product details will appear here.</p><div class="khaya-card-footer"><span class="khaya-price visitor-live-price" data-role="visitor-price">R0</span><span class="khaya-like"><span>♡</span><b>0</b></span></div></div>
+                      </article>
+                    </section>
+                  </div>
+                  <div class="screen-home"></div>
+                </div>
+              </div>
+              <span class="phone-label phone-label-live" data-role="visitor-label">Visitor’s phone</span>
+            </div>
+            <span class="realtime-beam" data-role="realtime-beam" aria-hidden="true">Live update →</span>
+          </div>
+        </div>
+      </article>
+
+      <article class="demo-chapter demo-chapter-product" data-demo-chapter="product">
+        <div class="wrap chapter-grid">
+          <div class="chapter-copy">
+            <span class="chapter-number">02 · LIVE MARKET STOCK</span>
+            <h2>Five left. Then sold out—live.</h2>
+            <p>As Strawberry Cupcakes sell at the market, the owner records each sale. Customers see the remaining stock, sale notices and sold-out state immediately.</p>
+            <div class="chapter-status" aria-live="polite"><i></i><span data-role="status">Waiting for this demo to enter view…</span></div>
+            <button class="replay-button" type="button" data-role="replay">↻ Replay this demo</button>
+          </div>
+          <div class="chapter-visual dual-phone-visual product-dual-visual">
+            <div class="phone-stage product-owner-stage">
+              <div class="phone-shadow"></div>
+              <div class="phone chapter-phone"><div class="phone-screen">
+                <div class="product-owner-mobile">
+                  <header class="owner-mobile-nav"><img src="assets/khaya/favicon.svg" alt=""><strong>Owner edit mode</strong><button type="button" tabindex="-1">Exit edit mode</button></header>
+                  <div class="market-edit-banner"><i></i><strong>Live market inventory</strong><span>Stock changes publish instantly</span></div>
+                  <article class="market-owner-card" data-role="product-owner-card">
+                    <div class="market-owner-photo"><img src="assets/khaya/strawberry-cupcake.jpg" alt="Strawberry Cupcake"><span class="market-sold-stamp" data-role="owner-sold-stamp">Sold<br>Out</span></div>
+                    <div class="market-owner-fields">
+                      <label>Price (rand)<input value="15" readonly tabindex="-1"></label>
+                      <label>Product name<input value="Strawberry Cupcake" readonly tabindex="-1"></label>
+                      <label>Description<textarea readonly tabindex="-1">Delicious moist strawberry cupcakes</textarea></label>
+                      <span class="stock-label">Stock available</span>
+                      <div class="stock-stepper"><button type="button" data-role="owner-minus" tabindex="-1" aria-label="Record one Strawberry Cupcake sold">−</button><strong data-role="owner-stock">5</strong><button type="button" tabindex="-1" aria-label="Add one Strawberry Cupcake back">+</button></div>
+                    </div>
+                  </article>
+                </div>
+              </div></div>
+              <span class="phone-label" data-role="product-owner-label">Owner edit mode</span>
+            </div>
+
+            <div class="phone-stage product-visitor-stage">
+              <div class="phone-shadow"></div>
+              <div class="phone chapter-phone"><div class="phone-screen">
+                <div class="market-visitor-mobile">
+                  <header class="khaya-nav"><span class="khaya-home"><img src="assets/khaya/favicon.svg" alt=""></span><span class="khaya-brand"><strong>Khaya Kos</strong><small>Gazebo Valley</small></span><span class="khaya-menu" aria-hidden="true"><i></i><i></i><i></i></span></header>
+                  <div class="market-visitor-content">
+                    <div class="market-open-banner"><i></i><strong>Open now</strong><span>at Gazebo Valley</span><small>View map and directions</small></div>
+                    <div class="market-sale-toast" data-role="sales-toast" hidden>🧁 3 × Strawberry Cupcakes just sold at the market!</div>
+                    <article class="market-product-card" data-role="visitor-product-card">
+                      <div class="market-product-photo"><img src="assets/khaya/strawberry-cupcake.jpg" alt="Strawberry Cupcake"><h3>Strawberry Cupcake</h3><span class="market-sold-stamp" data-role="visitor-sold-stamp">Sold<br>Out</span></div>
+                      <div class="market-product-body"><p>Delicious moist strawberry cupcakes</p><div><span class="market-price">R15</span><strong class="market-stock-pill" data-role="visitor-stock">5 left</strong></div></div>
+                    </article>
+                  </div>
+                </div>
+              </div></div>
+              <span class="phone-label phone-label-live" data-role="product-visitor-label">Visitor’s phone</span>
+            </div>
+            <span class="realtime-beam product-realtime-beam" data-role="product-beam" aria-hidden="true">Stock update →</span>
+          </div>
+        </div>
+      </article>
+
+      <article class="demo-chapter demo-chapter-likes" data-demo-chapter="likes">
+        <div class="wrap chapter-grid">
+          <div class="chapter-copy">
+            <span class="chapter-number">03 · LIVE LIKES</span>
+            <h2>One tap. Every visitor sees the love.</h2>
+            <p>One customer likes the Doughnuts. The heart responds instantly on their phone, while the new count and a live heart burst appear for another visitor.</p>
+            <div class="chapter-status" aria-live="polite"><i></i><span data-role="status">Waiting for this demo to enter view…</span></div>
+            <button class="replay-button" type="button" data-role="replay">↻ Replay this demo</button>
+          </div>
+          <div class="chapter-visual dual-phone-visual likes-dual-visual">
+            <div class="phone-stage likes-phone-stage likes-primary-stage">
+              <div class="phone-shadow"></div>
+              <div class="phone chapter-phone"><div class="phone-screen">
+                <div class="likes-visitor-mobile"><header class="khaya-nav"><span class="khaya-home"><img src="assets/khaya/favicon.svg" alt=""></span><span class="khaya-brand"><strong>Khaya Kos</strong><small>Gazebo Valley</small></span><span class="khaya-menu" aria-hidden="true"><i></i><i></i><i></i></span></header><section class="khaya-menu-view likes-menu-view"><div class="khaya-heading likes-heading"><strong>The Full Menu</strong><p>See something you love? Tap the heart to like it. Likes update live for everyone.</p></div><article class="khaya-card likes-product-card"><div class="khaya-card-photo likes-product-photo"><img src="assets/khaya/doughnuts-screen.png" alt="Freshly baked doughnuts"><h3>Doughnuts</h3></div><div class="khaya-card-body likes-product-body"><ul><li>A selection of delicious, freshly baked doughnuts</li></ul><div class="khaya-card-footer"><span class="khaya-price">R10</span><button class="khaya-like" type="button" data-role="primary-like-button" tabindex="-1" aria-label="Like Doughnuts"><span data-role="primary-like-icon">♡</span><b data-role="primary-like-count">0</b></button></div></div></article></section></div>
+              </div></div>
+              <span class="phone-label phone-label-live" data-role="primary-like-label">Visitor taps Like</span>
+            </div>
+            <div class="phone-stage likes-phone-stage likes-secondary-stage">
+              <div class="phone-shadow"></div>
+              <div class="phone chapter-phone"><div class="phone-screen">
+                <div class="likes-visitor-mobile"><header class="khaya-nav"><span class="khaya-home"><img src="assets/khaya/favicon.svg" alt=""></span><span class="khaya-brand"><strong>Khaya Kos</strong><small>Gazebo Valley</small></span><span class="khaya-menu" aria-hidden="true"><i></i><i></i><i></i></span></header><section class="khaya-menu-view likes-menu-view"><div class="khaya-heading likes-heading"><strong>The Full Menu</strong><p>See something you love? Tap the heart to like it. Likes update live for everyone.</p></div><article class="khaya-card likes-product-card"><div class="khaya-card-photo likes-product-photo"><img src="assets/khaya/doughnuts-screen.png" alt="Freshly baked doughnuts"><h3>Doughnuts</h3></div><div class="khaya-card-body likes-product-body"><ul><li>A selection of delicious, freshly baked doughnuts</li></ul><div class="khaya-card-footer"><span class="khaya-price">R10</span><span class="khaya-like" data-role="secondary-like-button"><span data-role="secondary-like-icon">♡</span><b data-role="secondary-like-count">0</b></span></div></div></article><span class="likes-heart-origin" data-role="remote-heart-origin" aria-hidden="true"></span></section></div>
+              </div></div>
+              <span class="phone-label phone-label-live" data-role="secondary-like-label">Another visitor</span>
+            </div>
+            <span class="realtime-beam likes-realtime-beam" data-role="likes-beam" aria-hidden="true">Like sent live →</span>
+          </div>
+        </div>
+      </article>
+
+      <article class="demo-chapter demo-chapter-market" data-demo-chapter="market">
+        <div class="wrap chapter-grid">
+          <div class="chapter-copy">
+            <span class="chapter-number">04 · MARKET DAY</span>
+            <h2>One tap, and the market is live.</h2>
+            <p>The owner opens the Saturday market. Connected visitors move into the live stock view automatically—with the celebratory confetti Khaya Kos customers see.</p>
+            <div class="chapter-status" aria-live="polite"><i></i><span data-role="status">Waiting for this demo to enter view…</span></div>
+            <button class="replay-button" type="button" data-role="replay">↻ Replay this demo</button>
+          </div>
+          <div class="chapter-visual single-phone-visual">
+            <div class="market-owner-toggle" data-role="market-toggle"><i></i><span><b data-role="market-toggle-title">Market closed</b><small data-role="market-toggle-detail">Tap to open</small></span></div>
+            <div class="phone-stage">
+              <div class="phone-shadow"></div>
+              <div class="phone chapter-phone"><div class="island"></div><div class="phone-screen"><div class="screen-bar"><span>9:41</span><span>5G&nbsp;&nbsp;●</span></div>
+                <div class="khaya-visitor"><header class="khaya-nav"><span class="khaya-home"><img src="assets/khaya/favicon.svg" alt=""></span><span class="khaya-brand"><strong>Khaya Kos</strong><small>Gazebo Valley</small></span><span class="khaya-menu" aria-hidden="true"><i></i><i></i><i></i></span></header><section class="khaya-menu-view" data-role="menu-view"><div class="khaya-heading"><span>Available to order all week</span><strong>The Full Menu</strong><p>Freshly made, just for you.</p></div><article class="khaya-card"><div class="khaya-card-photo"><img src="assets/khaya/cappuccino-muffins.svg" alt="Cappuccino Muffins"><h3>Cappuccino Muffins</h3></div><div class="khaya-card-body"><ul><li>Coffee-swirled sponge, whipped topping</li><li>Baked fresh to order</li></ul><div class="khaya-card-footer"><span class="khaya-price">R18</span><span class="khaya-like"><span>♡</span><b>0</b></span></div></div></article></section><section class="khaya-market-view" data-role="market-view" hidden><div class="khaya-open-toast">📣 The market just opened!</div><span class="khaya-market-eyebrow">Gazebo Valley · Saturdays</span><h3>Live at the Market</h3><p>Today’s stall selection updates in real time as items sell.</p><div class="khaya-live-banner"><i></i><strong>Open now</strong><span>at Gazebo Valley</span></div><div class="khaya-market-grid"><article><h4>Chicken Pies</h4><img src="assets/khaya/pies.svg" alt="Chicken Pies"><span>10 left</span></article><article><h4>Cappuccino Muffins</h4><img src="assets/khaya/cappuccino-muffins.svg" alt="Cappuccino Muffins"><span>15 left</span></article></div></section></div><div class="screen-home"></div>
+              </div></div>
+              <span class="phone-label phone-label-live">Visitor’s phone</span>
+            </div>
+          </div>
+        </div>
+      </article>
+    </section>
+
+    <section class="content" id="how">
+      <div class="wrap">
+        <div class="section-intro">
+          <div>
+            <div class="eyebrow">A simpler way to get online</div>
+            <h2>Built for how small business actually works.</h2>
+          </div>
+          <p>You are busy serving customers, not managing software. I take care of the design and technical work, then give you an easy way to keep the everyday details current.</p>
+        </div>
+        <div class="cards">
+          <article class="card">
+            <div class="card-num">01 — TALK</div>
+            <h3>Tell me what you do</h3>
+            <p>Send your details, products and photos over WhatsApp. No long briefing document required.</p>
+          </article>
+          <article class="card">
+            <div class="card-num">02 — BUILD</div>
+            <h3>I design and build it</h3>
+            <p>You get a polished, fast website shaped around your business and your customers.</p>
+          </article>
+          <article class="card">
+            <div class="card-num">03 — RUN</div>
+            <h3>You keep it current</h3>
+            <p>Update the things that change often yourself. I am still here when you need bigger changes.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="proof" id="example">
+      <div class="wrap proof-grid">
+        <div class="proof-window" aria-hidden="true">
+          <div class="window-top"><span></span><span></span><span></span></div>
+          <div class="window-body">
+            <div class="window-label">Live client website</div>
+            <h3>Khaya Kos</h3>
+            <p>Fresh food, updated for every market day.</p>
+          </div>
+        </div>
+        <div class="proof-copy">
+          <div class="eyebrow">A real business, not a mockup</div>
+          <h2>Khaya Kos runs on exactly this.</h2>
+          <p>The owner updates her menu, prices and availability herself, so customers always know what is actually available.</p>
+          <ul class="proof-list">
+            <li>Products and prices stay current</li>
+            <li>Sold-out items can be marked instantly</li>
+            <li>The site feels great on a customer's phone</li>
+          </ul>
+          <a class="proof-link" href="https://khaya-kos.onrender.com" target="_blank" rel="noopener">Visit the live website →</a>
+        </div>
+      </div>
+    </section>
+
+    <section class="cta">
+      <div class="wrap">
+        <div class="cta-box">
+          <h2>Ready for a website that keeps up?</h2>
+          <div class="cta-right">
+            <p>Tell me about your business. I’ll reply with a few ideas and a clear next step—no pressure.</p>
+            <a class="button wa-link" href="#">Start on WhatsApp <span class="arrow">→</span></a>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="wrap footer-row">
+      <div class="brand">Ryan Els<span class="brand-dot">.</span></div>
+      <div>Websites for small businesses · South Africa</div>
+      <div>© 2026 Ryan Els</div>
+    </div>
+  </footer>
+
+  <script type="module" src="js/main.js"></script>
+</body>
+</html>
