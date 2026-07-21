@@ -1,39 +1,38 @@
 document.addEventListener("DOMContentLoaded", () => {
-  const phoneALikeBtn = document.querySelector("#phoneA-like-btn");
-  const phoneALikeCount = document.querySelector(
-    "#phoneA-like-btn .like-count",
-  );
-  const toastA = document.querySelector("#toast-a");
-
-  const phoneBLikeCount = document.querySelector(
-    "#phoneB-like-btn .like-count",
-  );
-  const phoneBScreen = document.querySelector("#phoneBScreen");
-  const toastBText = document.querySelector("#toast-b-text");
-
-  const replayBtn = document.querySelector("#replay-btn");
+  // Grab all elements carefully
+  const phoneALikeBtn = document.getElementById("phoneA-like-btn");
+  const phoneBLikeBtn = document.getElementById("phoneB-like-btn");
+  const phoneBScreen = document.getElementById("phoneBScreen");
+  const replayBtn = document.getElementById("replay-btn");
+  const toastA = document.getElementById("toast-a");
+  const toastBText = document.getElementById("toast-b-text");
 
   let count = 0;
   let isAnimating = false;
 
   function triggerLikeDemo() {
-    if (isAnimating) return;
+    if (isAnimating || !phoneALikeBtn || !phoneBLikeBtn || !phoneBScreen)
+      return;
     isAnimating = true;
 
     count++;
 
     // 1. Phone A Actions: Change state, update count, trigger button heart burst
     phoneALikeBtn.classList.add("liked");
-    phoneALikeCount.textContent = count;
+    const phoneACountEl = phoneALikeBtn.querySelector(".like-count");
+    if (phoneACountEl) phoneACountEl.textContent = count;
+
     createButtonHeartBurst(phoneALikeBtn);
 
     if (toastA) {
       toastA.style.opacity = "1";
     }
 
-    // 2. Phone B Actions: Count increments (heart button remains neutral), trigger left heart stream
+    // 2. Phone B Actions: Sync live after slight delay
     setTimeout(() => {
-      phoneBLikeCount.textContent = count;
+      const phoneBCountEl = phoneBLikeBtn.querySelector(".like-count");
+      if (phoneBCountEl) phoneBCountEl.textContent = count;
+
       if (toastBText) {
         toastBText.textContent = `${count} ${count === 1 ? "like" : "likes"} · updated live`;
       }
@@ -65,7 +64,9 @@ document.addEventListener("DOMContentLoaded", () => {
 
       buttonElement.appendChild(heart);
 
-      setTimeout(() => heart.remove(), 650);
+      setTimeout(() => {
+        if (heart.parentNode) heart.remove();
+      }, 650);
     }
   }
 
@@ -85,7 +86,9 @@ document.addEventListener("DOMContentLoaded", () => {
 
         container.appendChild(heart);
 
-        setTimeout(() => heart.remove(), 1800);
+        setTimeout(() => {
+          if (heart.parentNode) heart.remove();
+        }, 1800);
       }, i * 200);
     }
   }
@@ -95,10 +98,17 @@ document.addEventListener("DOMContentLoaded", () => {
     count = 0;
     isAnimating = false;
 
-    phoneALikeBtn.classList.remove("liked");
-    phoneALikeCount.textContent = "0";
+    if (phoneALikeBtn) {
+      phoneALikeBtn.classList.remove("liked");
+      const phoneACountEl = phoneALikeBtn.querySelector(".like-count");
+      if (phoneACountEl) phoneACountEl.textContent = "0";
+    }
 
-    phoneBLikeCount.textContent = "0";
+    if (phoneBLikeBtn) {
+      const phoneBCountEl = phoneBLikeBtn.querySelector(".like-count");
+      if (phoneBCountEl) phoneBCountEl.textContent = "0";
+    }
+
     if (toastBText) {
       toastBText.textContent = "0 likes · updated live";
     }
