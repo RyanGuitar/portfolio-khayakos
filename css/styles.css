@@ -964,11 +964,11 @@ footer { padding: 34px 0 45px; border-top: 1px solid var(--line); }
 @keyframes beamAcross { 0% { opacity: 0; transform: translateX(-28px) scale(.85); } 30%,75% { opacity: 1; } 100% { opacity: 0; transform: translateX(84px) scale(1); } }
 
 /* Two connected visitors liking the same Khaya Kos product */
-.likes-dual-visual { position: relative; display: flex; flex-direction: column; align-items: center; gap: 56px; width: 340px; max-width: 100%; min-height: 0; margin: 0 auto; }
+.likes-dual-visual { width: 620px; max-width: 100%; margin-left: auto; }
 .likes-phone-stage { height: 676px; }
 .likes-phone-stage .chapter-phone { height: 650px; }
-.likes-primary-stage { margin-left: 0; }
-.likes-secondary-stage { position: static; margin-top: 0; transform: scale(.9); transform-origin: top center; }
+.likes-primary-stage { margin-left: 4px; }
+.likes-secondary-stage { position: absolute; z-index: 8; right: -8px; bottom: -5px; transform: scale(.8) rotate(4deg); transform-origin: bottom right; }
 .likes-secondary-stage .chapter-phone { box-shadow: inset 0 0 0 2px #090c0c, 0 42px 80px rgba(14,22,19,.32); }
 .demo-chapter-likes .phone-screen { overflow: hidden; }
 .likes-visitor-mobile { position: relative; height: 100%; overflow: hidden; color: #243044; background: #eef3f6; font-family: "Nunito", sans-serif; }
@@ -982,9 +982,7 @@ footer { padding: 34px 0 45px; border-top: 1px solid var(--line); }
 .likes-product-body ul { min-height: 47px; }
 .likes-product-body .khaya-card-footer { margin-top: 7px; }
 .likes-heart-origin { position: absolute; left: 21px; top: 58%; width: 1px; height: 1px; pointer-events: none; }
-.likes-realtime-beam { left: 50%; top: 686px; transform: translateX(-50%); }
-.likes-realtime-beam.is-sending { animation: likesBeamAcross 1.1s ease both; }
-@keyframes likesBeamAcross { 0% { opacity: 0; transform: translateX(-50%) translateY(-10px) scale(.85); } 30%,75% { opacity: 1; transform: translateX(-50%) scale(1); } 100% { opacity: 0; transform: translateX(-50%) translateY(10px) scale(1); } }
+.likes-realtime-beam { left: 260px; top: 315px; }
 .khaya-like.is-receiving { animation: receivedLike .65s ease; }
 @keyframes receivedLike { 45% { transform: scale(1.12); box-shadow: 0 0 0 7px rgba(166,58,46,.13); } }
 
@@ -1192,9 +1190,10 @@ footer { padding: 34px 0 45px; border-top: 1px solid var(--line); }
   .product-visitor-stage { right: -8px; bottom: 3px; transform: scale(.62) rotate(5deg); }
   .product-realtime-beam { left: 134px; top: 315px; font-size: .58rem; }
   .realtime-beam { left: 134px; top: 305px; font-size: .58rem; }
-  .likes-dual-visual { gap: 40px; width: 100%; max-width: 300px; }
-  .likes-secondary-stage { transform: scale(.86); }
-  .likes-realtime-beam { top: auto; bottom: -20px; font-size: .58rem; }
+  .likes-dual-visual { width: 360px; max-width: calc(100vw - 24px); min-height: 620px; }
+  .likes-primary-stage { left: -12px; transform: scale(.82) rotate(-2deg); transform-origin: top left; }
+  .likes-secondary-stage { right: -8px; bottom: 3px; transform: scale(.62) rotate(5deg); }
+  .likes-realtime-beam { left: 134px; top: 315px; font-size: .58rem; }
   .owner-control-card, .market-owner-toggle { left: 50%; top: 34px; transform: translateX(-92%) rotate(-3deg) scale(.84); transform-origin: center; }
   .owner-control-card.is-editing { transform: translateX(-92%) rotate(-3deg) scale(.84); }
   .market-owner-toggle.is-opening { animation-name: mobileMarketToggleTap; }
