@@ -29,7 +29,7 @@ function replaceList(list, items) {
   }));
 }
 
-function spawnHearts(root, anchor, count = 5) {
+function spawnHearts(root, anchor, count = 5, spreadMs = 75) {
   if (reducedMotion) return;
   const rootRect = root.getBoundingClientRect();
   const anchorRect = anchor.getBoundingClientRect();
@@ -43,10 +43,10 @@ function spawnHearts(root, anchor, count = 5) {
     heart.textContent = "❤";
     heart.style.left = `${startX + (Math.random() * 30 - 15)}px`;
     heart.style.top = `${startY + (Math.random() * 8 - 4)}px`;
-    heart.style.setProperty("--heart-delay", `${index * 75}ms`);
+    heart.style.setProperty("--heart-delay", `${index * spreadMs}ms`);
     heart.style.setProperty("--heart-x", `${Math.random() * 40 - 20}px`);
     root.appendChild(heart);
-    window.setTimeout(() => heart.remove(), 1550);
+    window.setTimeout(() => heart.remove(), 1550 + index * spreadMs);
   }
 }
 
@@ -337,53 +337,44 @@ function resetLikes(root, roles) {
   setStatus(roles, "The Khaya Kos heart is ready for a visitor.");
 }
 
-function pulseLikeBeam(roles, label) {
+function pulseLikeBeam(roles) {
   roles.likesBeam.classList.remove("is-sending");
   void roles.likesBeam.offsetWidth;
   roles.likesBeam.classList.add("is-sending");
   roles.secondaryLikeButton.classList.remove("is-receiving");
   void roles.secondaryLikeButton.offsetWidth;
   roles.secondaryLikeButton.classList.add("is-receiving");
-  roles.secondaryLikeLabel.textContent = label;
+  roles.secondaryLikeLabel.textContent = "1 like · updated live";
   roles.secondaryLikeLabel.classList.add("is-updated");
 }
 
 function playLikes(root, roles, timers) {
   resetLikes(root, roles);
 
-  const firstLike = () => {
+  const tapLike = () => {
     roles.primaryLikeButton.classList.add("is-liked");
     roles.primaryLikeIcon.textContent = "❤";
     roles.primaryLikeCount.textContent = "1";
     roles.primaryLikeLabel.textContent = "Like sent";
     roles.primaryLikeLabel.classList.add("is-updated");
-    spawnHearts(root, roles.primaryLikeButton, 5);
-    setStatus(roles, "Five hearts rise as the visitor’s like is counted.");
+    spawnHearts(root, roles.primaryLikeButton, 4);
+    setStatus(roles, "The visitor taps the heart — it fills red and the count updates.");
   };
-  const receiveFirstLike = () => {
+  const receiveLike = () => {
     roles.secondaryLikeCount.textContent = "1";
-    pulseLikeBeam(roles, "1 like · updated live");
-    spawnHearts(root, roles.remoteHeartOrigin, 3);
-    setStatus(roles, "The like count updates instantly for another visitor.");
-  };
-  const secondLike = () => {
-    roles.secondaryLikeIcon.textContent = "❤";
-    roles.secondaryLikeCount.textContent = "2";
-    pulseLikeBeam(roles, "2 likes · updated live");
-    spawnHearts(root, roles.remoteHeartOrigin, 3);
-    setStatus(roles, "A second live like arrives from another visitor.");
+    pulseLikeBeam(roles);
+    spawnHearts(root, roles.remoteHeartOrigin, 7, 120);
+    setStatus(roles, "Another visitor sees the count update instantly, with a stream of hearts.");
   };
 
   if (reducedMotion) {
-    firstLike();
-    receiveFirstLike();
-    secondLike();
+    tapLike();
+    receiveLike();
     return;
   }
 
-  schedule(timers, 1200, firstLike);
-  schedule(timers, 2350, receiveFirstLike);
-  schedule(timers, 4600, secondLike);
+  schedule(timers, 1200, tapLike);
+  schedule(timers, 2200, receiveLike);
 }
 
 function resetMarket(root, roles) {
