@@ -37,8 +37,17 @@ button, a { -webkit-tap-highlight-color: transparent; }
   backdrop-filter: blur(16px);
 }
 .nav-row { height: 74px; display: flex; align-items: center; justify-content: space-between; gap: 28px; }
-.brand { font: 800 1.08rem/1 var(--display); text-decoration: none; letter-spacing: -.04em; }
-.brand-dot { color: #7aa800; }
+.brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  color: var(--ink);
+  text-decoration: none;
+}
+.brand-logo { width: 48px; height: 48px; flex: 0 0 auto; object-fit: contain; }
+.brand-copy { display: grid; gap: 3px; line-height: 1; }
+.brand-copy strong { font: 800 1.12rem/1 var(--display); letter-spacing: -.04em; }
+.brand-copy small { color: #59646a; font-size: .52rem; font-weight: 600; letter-spacing: .01em; white-space: nowrap; }
 .nav-links { display: flex; align-items: center; gap: 32px; }
 .nav-links > a { color: #414a50; font-size: .92rem; font-weight: 600; text-decoration: none; }
 .nav-links > a.button { color: #fff; }
@@ -195,7 +204,8 @@ section.content { padding: 116px 0; }
 .cta-right p { margin: 0 0 22px; color: #43520c; }
 
 footer { padding: 34px 0 45px; border-top: 1px solid var(--line); }
-.footer-row { display: flex; justify-content: space-between; gap: 20px; color: #727b77; font-size: .82rem; }
+.footer-row { display: flex; align-items: center; justify-content: space-between; gap: 20px; color: #727b77; font-size: .82rem; }
+.footer-brand { color: var(--ink); }
 
 @media (max-width: 1050px) {
   .hero-grid { grid-template-columns: 1fr; }
@@ -206,6 +216,10 @@ footer { padding: 34px 0 45px; border-top: 1px solid var(--line); }
 @media (max-width: 760px) {
   .wrap { width: min(100% - 32px, 1180px); }
   .nav-row { height: 66px; }
+  .brand { gap: 7px; }
+  .brand-logo { width: 40px; height: 40px; }
+  .brand-copy strong { font-size: 1rem; }
+  .brand-copy small { font-size: .46rem; }
   .nav-links > a:not(.button) { display: none; }
   .nav-links .button { min-height: 42px; padding: 0 15px; font-size: .8rem; }
   .hero { padding: 56px 0 72px; }
@@ -229,6 +243,10 @@ footer { padding: 34px 0 45px; border-top: 1px solid var(--line); }
   .cta-box { padding: 38px 26px; }
   .cta-right { justify-self: start; }
   .footer-row { flex-direction: column; }
+}
+@media (max-width: 430px) {
+  .nav-row { gap: 12px; }
+  .nav-row .brand-copy small { display: none; }
 }
 @media (max-width: 390px) {
   .phone { transform: scale(.92) rotate(-2deg); transform-origin: top center; }
