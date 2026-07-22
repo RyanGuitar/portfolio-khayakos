@@ -976,7 +976,6 @@ footer { padding: 34px 0 45px; border-top: 1px solid var(--line); }
 .likes-heading > strong { margin-top: 0; }
 .likes-heading > p { max-width: 245px; margin-bottom: 8px; font-size: .5rem; }
 .likes-product-photo { height: 280px; background: #f8f5f5; }
-.likes-product-photo img { position: absolute; top: -202px; left: -15px; width: 125%; max-width: none; height: auto; object-fit: initial; transform: none; }
 .likes-product-photo h3 { background: #173f61; }
 .likes-product-body { padding: 11px 12px 12px; }
 .likes-product-body ul { min-height: 47px; }
@@ -1169,6 +1168,17 @@ footer { padding: 34px 0 45px; border-top: 1px solid var(--line); }
   .chapter-visual { justify-self: center; }
   .dual-phone-visual { width: 620px; }
   .demo-chapter::before { right: 50%; transform: translate(50%,-35%); }
+}
+
+@media (max-width: 1010px) and (min-width: 621px) {
+  .product-dual-visual, .likes-dual-visual, .photo-dual-visual, .market-dual-visual, .dual-phone-visual {
+    display: flex; flex-direction: column; align-items: center; gap: 40px; width: 320px; max-width: 100%; min-height: 0; margin: 0 auto;
+  }
+  .product-owner-stage, .likes-primary-stage, .owner-stage { margin-left: 0; }
+  .product-visitor-stage, .likes-secondary-stage, .visitor-stage {
+    position: static; margin-top: 0; transform: scale(.92); transform-origin: top center;
+  }
+  .product-realtime-beam, .likes-realtime-beam, .realtime-beam { position: static; display: inline-flex; margin: 0 auto; transform: none; }
 }
 
 @media (max-width: 620px) {
