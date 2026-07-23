@@ -947,9 +947,6 @@ footer { padding: 34px 0 45px; border-top: 1px solid var(--line); }
 .chapter-copy h2 { max-width: 12ch; margin: 15px 0 20px; font-size: clamp(2.55rem, 4.7vw, 4.6rem); line-height: 1.01; letter-spacing: -.065em; }
 .chapter-copy > p { max-width: 47ch; margin: 0; color: #647078; font-size: 1.04rem; }
 .demo-chapter-market .chapter-copy > p { color: #aebbc1; }
-.chapter-status { display: flex; min-height: 54px; align-items: center; gap: 11px; margin-top: 30px; padding: 12px 14px; border: 1px solid rgba(16,20,24,.09); border-radius: 12px; background: rgba(255,255,255,.62); color: #45514b; font-size: .8rem; font-weight: 700; }
-.chapter-status i { width: 8px; height: 8px; flex: none; border-radius: 50%; background: #87af21; box-shadow: 0 0 0 5px rgba(135,175,33,.14); }
-.demo-chapter-market .chapter-status { border-color: rgba(255,255,255,.12); color: #dbe4e5; background: rgba(255,255,255,.06); }
 .demo-chapter .replay-button { opacity: .7; }
 .demo-chapter .replay-button:hover { opacity: 1; }
 .demo-chapter-market .replay-button { color: #f0f4ee; border-color: rgba(255,255,255,.22); background: rgba(255,255,255,.08); }
@@ -1462,7 +1459,7 @@ body { padding-top: var(--nav-height); }
   min-height: 0;
   align-self: center;
   justify-self: center;
-  scale: .82;
+  scale: .92;
   transform-origin: center;
 }
 .single-phone-visual,
@@ -1473,13 +1470,10 @@ body { padding-top: var(--nav-height); }
 .likes-secondary-stage,
 .product-visitor-stage { transform: scale(.8); }
 .chapter-copy h2 { margin: 13px auto 18px; }
-.chapter-status { width: min(100%, 500px); justify-content: center; }
 
 @media (max-height: 720px) and (min-width: 881px) {
-  .chapter-visual { scale: .66; }
   .chapter-copy h2 { font-size: clamp(2rem, 4vw, 3.4rem); }
   .chapter-copy > p { font-size: .9rem; }
-  .chapter-status { min-height: 46px; margin-top: 18px; }
 }
 
 @media (max-width: 880px) {
@@ -1546,7 +1540,6 @@ body { padding-top: var(--nav-height); }
   .chapter-visual { scale: .52; }
   .chapter-copy h2 { max-width: 15ch; margin: 8px auto 10px; font-size: clamp(1.8rem, 6vw, 2.7rem); }
   .chapter-copy > p { max-width: 56ch; font-size: .86rem; line-height: 1.4; }
-  .chapter-status { height: 48px; min-height: 48px; margin-top: 10px; padding: 8px 11px; font-size: .72rem; overflow: hidden; }
   .replay-button { min-height: 34px; margin-top: 8px; }
   .demo-chapter::before { right: 50%; transform: translate(50%, -35%); }
   .dual-phone-visual .owner-stage,
@@ -1570,7 +1563,6 @@ body { padding-top: var(--nav-height); }
   .chapter-copy h2 { font-size: clamp(1.65rem, 7.5vw, 2.25rem); }
   .chapter-copy > p { font-size: .78rem; }
   .chapter-number { font-size: .62rem; }
-  .chapter-status { height: 44px; min-height: 44px; margin-top: 8px; font-size: .65rem; }
   .replay-button { min-height: 31px; margin-top: 6px; font-size: .65rem; }
   .owner-control-card,
   .market-owner-toggle { transform: translateX(-92%) scale(.84); }

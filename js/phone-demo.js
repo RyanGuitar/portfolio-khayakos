@@ -14,7 +14,7 @@ function schedule(timers, delay, callback) {
 }
 
 function setStatus(roles, message) {
-  roles.status.textContent = message;
+  if (roles.status) roles.status.textContent = message;
 }
 
 function setHidden(element, hidden) {
