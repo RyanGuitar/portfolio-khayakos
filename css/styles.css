@@ -1489,13 +1489,26 @@ body { padding-top: var(--nav-height); }
     --nav-height: 76px;
     --mobile-section-height: calc(100svh - var(--nav-height));
   }
-  .hero,
-  .demo-chapter {
+  html {
+    scroll-padding-top: var(--nav-height);
+    scroll-snap-type: y proximity;
+  }
+  .hero {
     height: var(--mobile-section-height);
     min-height: var(--mobile-section-height);
     max-height: var(--mobile-section-height);
     contain: size layout paint;
     overflow-anchor: none;
+  }
+  .demo-chapter {
+    height: calc(100lvh - var(--nav-height));
+    min-height: calc(100lvh - var(--nav-height));
+    max-height: calc(100lvh - var(--nav-height));
+    contain: size layout paint;
+    overflow-anchor: none;
+    scroll-margin-top: 0;
+    scroll-snap-align: start;
+    scroll-snap-stop: normal;
   }
   .demo-stories { overflow-anchor: none; }
   .nav-row { height: var(--nav-height); }
