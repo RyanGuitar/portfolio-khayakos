@@ -1485,11 +1485,19 @@ body { padding-top: var(--nav-height); }
 }
 
 @media (max-width: 880px) {
-  :root { --nav-height: 76px; }
+  :root {
+    --nav-height: 76px;
+    --mobile-section-height: calc(100svh - var(--nav-height));
+  }
   .hero,
   .demo-chapter {
-    height: calc(100svh - var(--nav-height));
+    height: var(--mobile-section-height);
+    min-height: var(--mobile-section-height);
+    max-height: var(--mobile-section-height);
+    contain: size layout paint;
+    overflow-anchor: none;
   }
+  .demo-stories { overflow-anchor: none; }
   .nav-row { height: var(--nav-height); }
   .nav-links { display: none; }
   .nav-toggle { display: grid; flex: 0 0 auto; }
@@ -1501,7 +1509,12 @@ body { padding-top: var(--nav-height); }
     grid-template-rows: repeat(2, minmax(0, 1fr));
   }
   .chapter-copy,
-  .chapter-visual { min-width: 0; }
+  .chapter-visual {
+    min-width: 0;
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
   .product-hero-grid .hero-copy,
   .chapter-copy { padding: clamp(16px, 5vw, 32px); }
   .product-hero-visual {
@@ -1522,7 +1535,7 @@ body { padding-top: var(--nav-height); }
   .chapter-visual { scale: .52; }
   .chapter-copy h2 { max-width: 15ch; margin: 8px auto 10px; font-size: clamp(1.8rem, 6vw, 2.7rem); }
   .chapter-copy > p { max-width: 56ch; font-size: .86rem; line-height: 1.4; }
-  .chapter-status { min-height: 42px; margin-top: 10px; padding: 8px 11px; font-size: .72rem; }
+  .chapter-status { height: 48px; min-height: 48px; margin-top: 10px; padding: 8px 11px; font-size: .72rem; overflow: hidden; }
   .replay-button { min-height: 34px; margin-top: 8px; }
   .demo-chapter::before { right: 50%; transform: translate(50%, -35%); }
   .dual-phone-visual .owner-stage,
@@ -1547,7 +1560,7 @@ body { padding-top: var(--nav-height); }
   .chapter-copy h2 { font-size: clamp(1.65rem, 7.5vw, 2.25rem); }
   .chapter-copy > p { font-size: .78rem; }
   .chapter-number { font-size: .62rem; }
-  .chapter-status { min-height: 38px; margin-top: 8px; font-size: .65rem; }
+  .chapter-status { height: 44px; min-height: 44px; margin-top: 8px; font-size: .65rem; }
   .replay-button { min-height: 31px; margin-top: 6px; font-size: .65rem; }
   .owner-control-card,
   .market-owner-toggle { transform: translateX(-92%) scale(.84); }
