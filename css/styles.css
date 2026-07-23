@@ -1537,10 +1537,11 @@ body { padding-top: var(--nav-height); }
   .chapter-copy,
   .chapter-visual {
     min-width: 0;
-    opacity: 1;
-    transform: none;
-    transition: none;
+    opacity: 0;
+    transition: opacity .32s ease, transform .38s cubic-bezier(.2,.75,.2,1);
   }
+  .chapter-copy { transform: translateY(10px); }
+  .chapter-visual { transform: translateY(14px); }
   .product-hero-grid .hero-copy,
   .chapter-copy { padding: clamp(16px, 5vw, 32px); }
   .product-hero-visual {

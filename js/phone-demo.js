@@ -421,13 +421,15 @@ function createChapterController(root) {
     state = "running";
     root.dataset.demoState = state;
     root.classList.add("is-paused");
-    root.classList.add("is-in-view");
+    root.classList.remove("is-in-view");
     if (demoName === "photo") playPhoto(root, roles, timers);
     if (demoName === "product") playProduct(root, roles, timers);
     if (demoName === "likes") playLikes(root, roles, timers);
     if (demoName === "market") playMarket(root, roles, timers);
     void root.offsetWidth;
     root.classList.remove("is-paused");
+    void root.offsetWidth;
+    root.classList.add("is-in-view");
 
     if (reducedMotion) {
       state = "completed";
@@ -448,6 +450,7 @@ function createChapterController(root) {
     state = "interrupted";
     root.dataset.demoState = state;
     root.classList.add("is-paused");
+    root.classList.remove("is-in-view");
     root.querySelectorAll(".demo-confetti, .khaya-heart").forEach((element) => element.remove());
   }
 
