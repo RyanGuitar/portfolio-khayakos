@@ -450,7 +450,6 @@ function createChapterController(root) {
     state = "interrupted";
     root.dataset.demoState = state;
     root.classList.add("is-paused");
-    root.classList.remove("is-in-view");
     root.querySelectorAll(".demo-confetti, .khaya-heart").forEach((element) => element.remove());
   }
 
@@ -480,6 +479,11 @@ export function initialisePhoneDemo() {
   let settleTimer;
   let snapTimer;
   let isAutoSnapping = false;
+  let activeChapter = null;
+  let lastScrollY = window.scrollY;
+  let intentDirection = 0;
+  let intentDistance = 0;
+  const mobileViewport = window.matchMedia("(max-width: 880px)");
 
   const isFullySettled = (chapter) => {
     const chapterRect = chapter.getBoundingClientRect();
@@ -510,46 +514,85 @@ export function initialisePhoneDemo() {
     });
   };
 
-  const settleVisibleChapter = () => {
-    if (document.hidden) return;
+  const beginSnap = (target) => {
+    if (isAutoSnapping || !target) return;
 
-    let snapCandidate;
-    let bestVisibleRatio = 0;
-
-    visibleChapters.forEach((chapter) => {
-      const controller = controllers.get(chapter);
-      if (controller.shouldAutoPlay && isFullySettled(chapter)) {
-        controller.play();
-        return;
-      }
-      if (!controller.shouldAutoPlay) return;
-
-      const ratio = visibleRatio(chapter);
-      if (ratio > bestVisibleRatio) {
-        bestVisibleRatio = ratio;
-        snapCandidate = chapter;
-      }
-    });
-
-    if (isAutoSnapping || !snapCandidate || bestVisibleRatio < .72) return;
-
-    const chapterTop = snapCandidate.getBoundingClientRect().top;
+    const chapterTop = target.getBoundingClientRect().top;
     const navBottom = nav?.getBoundingClientRect().bottom || 76;
     const targetScroll = Math.round(window.scrollY + chapterTop - navBottom);
     if (Math.abs(targetScroll - window.scrollY) <= 6) return;
 
+    if (activeChapter && activeChapter !== target) {
+      activeChapter.classList.remove("is-in-view");
+    }
+    target.classList.remove("is-in-view");
+
     isAutoSnapping = true;
+    intentDistance = 0;
     window.scrollTo({ top: targetScroll, behavior: "smooth" });
     window.clearTimeout(snapTimer);
     snapTimer = window.setTimeout(() => {
       isAutoSnapping = false;
+      lastScrollY = window.scrollY;
       scheduleSettledCheck();
-    }, 450);
+    }, 520);
+  };
+
+  const intendedChapter = () => {
+    if (!intentDirection) return null;
+
+    if (activeChapter) {
+      const activeIndex = chapters.indexOf(activeChapter);
+      return chapters[activeIndex + intentDirection] || null;
+    }
+
+    let candidate = null;
+    let bestRatio = 0;
+    visibleChapters.forEach((chapter) => {
+      const ratio = visibleRatio(chapter);
+      if (ratio > bestRatio) {
+        bestRatio = ratio;
+        candidate = chapter;
+      }
+    });
+    return candidate;
+  };
+
+  const commitIntentIfReady = () => {
+    if (isAutoSnapping || !intentDirection) return;
+
+    const target = intendedChapter();
+    if (!target) return;
+
+    const minimumDistance = mobileViewport.matches ? 56 : 90;
+    const minimumVisibleRatio = mobileViewport.matches ? .1 : .14;
+    if (intentDistance < minimumDistance || visibleRatio(target) < minimumVisibleRatio) return;
+
+    beginSnap(target);
+  };
+
+  const settleVisibleChapter = () => {
+    if (document.hidden) return;
+
+    visibleChapters.forEach((chapter) => {
+      if (!isFullySettled(chapter)) return;
+
+      const controller = controllers.get(chapter);
+      activeChapter = chapter;
+      intentDistance = 0;
+
+      if (controller.shouldAutoPlay) {
+        controller.play();
+        return;
+      }
+      chapter.classList.remove("is-paused");
+      chapter.classList.add("is-in-view");
+    });
   };
 
   const scheduleSettledCheck = () => {
     window.clearTimeout(settleTimer);
-    settleTimer = window.setTimeout(settleVisibleChapter, 220);
+    settleTimer = window.setTimeout(settleVisibleChapter, 140);
   };
 
   const observer = new IntersectionObserver((entries) => {
@@ -557,12 +600,27 @@ export function initialisePhoneDemo() {
       if (entry.isIntersecting) visibleChapters.add(entry.target);
       else visibleChapters.delete(entry.target);
     });
+    commitIntentIfReady();
     scheduleSettledCheck();
-  }, { threshold: [0, .5, .72, .95, 1] });
+  }, { threshold: [0, .1, .14, .5, .95, 1] });
 
   chapters.forEach((chapter) => observer.observe(chapter));
   window.addEventListener("scroll", () => {
+    const currentScrollY = window.scrollY;
+    const delta = currentScrollY - lastScrollY;
+    lastScrollY = currentScrollY;
+
+    if (!isAutoSnapping && Math.abs(delta) >= 1) {
+      const direction = delta > 0 ? 1 : -1;
+      if (direction !== intentDirection) {
+        intentDirection = direction;
+        intentDistance = 0;
+      }
+      intentDistance += Math.abs(delta);
+    }
+
     stopDepartedAnimations();
+    commitIntentIfReady();
     scheduleSettledCheck();
   }, { passive: true });
   window.addEventListener("scrollend", scheduleSettledCheck, { passive: true });

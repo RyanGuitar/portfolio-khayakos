@@ -1443,7 +1443,7 @@ body { padding-top: var(--nav-height); }
   .demo-chapter {
     scroll-margin-top: 0;
     scroll-snap-align: start;
-    scroll-snap-stop: normal;
+    scroll-snap-stop: always;
   }
   .dual-phone-visual,
   .likes-dual-visual,
@@ -1521,7 +1521,7 @@ body { padding-top: var(--nav-height); }
     overflow-anchor: none;
     scroll-margin-top: 0;
     scroll-snap-align: start;
-    scroll-snap-stop: normal;
+    scroll-snap-stop: always;
   }
   .demo-stories { overflow-anchor: none; }
   .nav-row { height: var(--nav-height); }
