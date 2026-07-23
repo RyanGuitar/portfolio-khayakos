@@ -79,7 +79,6 @@ function resetPhoto(root, roles) {
   roles.choosePhoto.classList.remove("is-tapped");
   roles.usePhoto.classList.remove("is-tapped");
   roles.exitEdit.classList.remove("is-tapped");
-  roles.realtimeBeam.classList.remove("is-sending");
   roles.zoomLevel.classList.remove("is-zooming");
   roles.cropImage.classList.remove("is-positioned");
   setHidden(roles.photoSheet, true);
@@ -107,10 +106,7 @@ function resetPhoto(root, roles) {
   setStatus(roles, "A blank New Item card is ready in owner edit mode.");
 }
 
-function pulseRealtime(roles, label) {
-  roles.realtimeBeam.classList.remove("is-sending");
-  void roles.realtimeBeam.offsetWidth;
-  roles.realtimeBeam.classList.add("is-sending");
+function updateVisitor(roles, label) {
   roles.visitorCard.classList.add("is-receiving");
   roles.visitorLabel.textContent = label;
   roles.visitorLabel.classList.add("is-updated");
@@ -191,7 +187,7 @@ function playPhoto(root, roles, timers) {
     setHidden(roles.visitorPlaceholder, true);
     setHidden(roles.visitorImage, false);
     roles.visitorCard.classList.add("has-photo");
-    pulseRealtime(roles, "Photo updated live");
+    updateVisitor(roles, "Photo updated live");
     setStatus(roles, "The exact cropped photo immediately appears for the visitor.");
   });
 
@@ -200,7 +196,7 @@ function playPhoto(root, roles, timers) {
   schedule(timers, 8150, () => {
     roles.visitorPrice.textContent = "R200";
     roles.visitorCard.classList.add("has-price");
-    pulseRealtime(roles, "Price updated live");
+    updateVisitor(roles, "Price updated live");
     setStatus(roles, "Moving to the next field publishes R200 for the visitor.");
   });
   typeField(timers, roles.ownerNameField, "Moist Chocolate Cake", 8350, 1500);
@@ -208,7 +204,7 @@ function playPhoto(root, roles, timers) {
   schedule(timers, 10000, () => {
     roles.visitorName.textContent = "Moist Chocolate Cake";
     roles.visitorCard.classList.add("has-name");
-    pulseRealtime(roles, "Name updated live");
+    updateVisitor(roles, "Name updated live");
     setStatus(roles, "Leaving the name field publishes Moist Chocolate Cake.");
   });
   typeField(timers, roles.ownerDescriptionField, "Rich, moist chocolate cake layered with silky chocolate icing.", 10150, 2200);
@@ -216,7 +212,7 @@ function playPhoto(root, roles, timers) {
   schedule(timers, 12500, () => {
     roles.visitorDescription.textContent = "Rich, moist chocolate cake layered with silky chocolate icing.";
     roles.visitorCard.classList.add("has-description", "is-live-updated");
-    pulseRealtime(roles, "Description updated live");
+    updateVisitor(roles, "Description updated live");
     setStatus(roles, "The finished description appears on the visitor’s phone.");
   });
 
@@ -245,7 +241,6 @@ function resetProduct(root, roles) {
   roles.visitorProductCard.classList.remove("is-sold-out", "is-live-updated");
   roles.ownerSoldStamp.classList.remove("is-visible");
   roles.visitorSoldStamp.classList.remove("is-visible");
-  roles.productBeam.classList.remove("is-sending");
   roles.productVisitorLabel.textContent = "Visitor’s phone";
   roles.productVisitorLabel.classList.remove("is-updated");
   roles.productOwnerLabel.textContent = "Owner edit mode";
@@ -254,12 +249,10 @@ function resetProduct(root, roles) {
   setStatus(roles, "The market is open with 5 Strawberry Cupcakes left.");
 }
 
-function pulseStockUpdate(roles, label) {
+function updateStockLabel(roles, label) {
   roles.ownerMinus.classList.remove("is-tapped");
-  roles.productBeam.classList.remove("is-sending");
   void roles.ownerMinus.offsetWidth;
   roles.ownerMinus.classList.add("is-tapped");
-  roles.productBeam.classList.add("is-sending");
   roles.productVisitorLabel.textContent = label;
   roles.productVisitorLabel.classList.add("is-updated");
 }
@@ -294,17 +287,17 @@ function playProduct(root, roles, timers) {
 
   schedule(timers, 1100, () => {
     setProductStock(roles, 4);
-    pulseStockUpdate(roles, "4 left · updated live");
+    updateStockLabel(roles, "4 left · updated live");
     setStatus(roles, "First sale recorded: 4 cupcakes remain on both phones.");
   });
   schedule(timers, 2050, () => {
     setProductStock(roles, 3);
-    pulseStockUpdate(roles, "3 left · updated live");
+    updateStockLabel(roles, "3 left · updated live");
     setStatus(roles, "Second sale recorded: the visitor immediately sees 3 left.");
   });
   schedule(timers, 3000, () => {
     setProductStock(roles, 2);
-    pulseStockUpdate(roles, "2 left · updated live");
+    updateStockLabel(roles, "2 left · updated live");
     setStatus(roles, "The third minus tap updates the live stock to 2.");
   });
   schedule(timers, 3550, () => {
@@ -314,12 +307,12 @@ function playProduct(root, roles, timers) {
   schedule(timers, 5850, () => setHidden(roles.salesToast, true));
   schedule(timers, 6600, () => {
     setProductStock(roles, 1);
-    pulseStockUpdate(roles, "1 left · updated live");
+    updateStockLabel(roles, "1 left · updated live");
     setStatus(roles, "Another sale leaves only 1 Strawberry Cupcake.");
   });
   schedule(timers, 7700, () => {
     setProductStock(roles, 0);
-    pulseStockUpdate(roles, "Sold out live");
+    updateStockLabel(roles, "Sold out live");
     showSalesToast(roles, "🧁 Strawberry Cupcakes are sold out!", true);
     root.classList.add("is-complete");
     setStatus(roles, "The final sale triggers Sold Out on both devices in real time.");
@@ -335,7 +328,6 @@ function resetLikes(root, roles) {
   roles.secondaryLikeButton.classList.remove("is-liked", "is-receiving");
   roles.secondaryLikeIcon.textContent = "♡";
   roles.secondaryLikeCount.textContent = "0";
-  roles.likesBeam.classList.remove("is-sending");
   roles.primaryLikeLabel.textContent = "Visitor taps Like";
   roles.primaryLikeLabel.classList.remove("is-updated");
   roles.secondaryLikeLabel.textContent = "Another visitor";
@@ -343,10 +335,7 @@ function resetLikes(root, roles) {
   setStatus(roles, "The Khaya Kos heart is ready for a visitor.");
 }
 
-function pulseLikeBeam(roles) {
-  roles.likesBeam.classList.remove("is-sending");
-  void roles.likesBeam.offsetWidth;
-  roles.likesBeam.classList.add("is-sending");
+function updateRemoteLike(roles) {
   roles.secondaryLikeButton.classList.remove("is-receiving");
   void roles.secondaryLikeButton.offsetWidth;
   roles.secondaryLikeButton.classList.add("is-receiving");
@@ -368,7 +357,7 @@ function playLikes(root, roles, timers) {
   };
   const receiveLike = () => {
     roles.secondaryLikeCount.textContent = "1";
-    pulseLikeBeam(roles);
+    updateRemoteLike(roles);
     spawnHearts(root, roles.remoteHeartOrigin, 7, 120);
     setStatus(roles, "Another visitor sees the count update instantly, with a stream of hearts.");
   };
