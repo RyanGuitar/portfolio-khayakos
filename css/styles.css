@@ -1262,7 +1262,6 @@ footer { padding: 34px 0 45px; border-top: 1px solid var(--line); }
 }
 .product-hero-grid { grid-template-columns: minmax(0, 1.05fr) minmax(380px, .75fr); gap: clamp(58px, 8vw, 120px); }
 .product-hero-grid .hero-copy { max-width: 760px; }
-.product-eyebrow { margin-bottom: 22px; color: var(--product-blue); font-size: .77rem; font-weight: 800; letter-spacing: .1em; text-transform: uppercase; }
 .product-hero-grid h1 { color: #071a42; font-size: clamp(3.6rem, 6.2vw, 6.3rem); line-height: .98; }
 .product-hero-grid h1 span {
   display: inline-block;
@@ -1333,7 +1332,6 @@ footer { padding: 34px 0 45px; border-top: 1px solid var(--line); }
   .nav-links .whatsapp-button { min-height: 44px; padding: 0 13px; font-size: .72rem; }
   .nav-links .whatsapp-button svg { width: 18px; height: 18px; }
   .hero { padding: 58px 0 76px; }
-  .product-eyebrow { margin-bottom: 17px; font-size: .67rem; line-height: 1.35; }
   .product-hero-grid h1 { font-size: clamp(3rem, 14vw, 4.25rem); }
   .product-hero-grid .hero-lead { margin: 23px 0 26px; }
   .product-hero-visual { min-height: 570px; }
@@ -1566,7 +1564,6 @@ body { padding-top: var(--nav-height); }
   .brand-copy { min-width: 0; }
   .brand-copy small { max-width: 150px; font-size: .52rem; }
   .product-hero-grid h1 { font-size: clamp(2.45rem, 12vw, 3.35rem); }
-  .product-eyebrow { margin-bottom: 10px; }
   .product-hero-grid .hero-lead { margin: 14px auto 0; font-size: .9rem; line-height: 1.4; }
   .chapter-visual { scale: .47; }
   .chapter-copy { padding: 12px 18px; }
@@ -1620,8 +1617,19 @@ body { padding-top: var(--nav-height); }
     grid-template-rows: minmax(0, 1fr);
   }
   .product-hero-grid .hero-copy { padding: clamp(12px, 3vw, 24px); }
-  .product-eyebrow { margin-bottom: 8px; font-size: .56rem; }
   .product-hero-grid h1 { font-size: clamp(2rem, 6vw, 3.2rem); }
   .product-hero-grid .hero-lead { margin-top: 10px; font-size: .76rem; }
   .product-live-callout { display: none; }
+}
+
+/* Desktop landing-page refinements */
+@media (min-width: 881px) {
+  .nav-row.wrap {
+    width: calc(100% - clamp(64px, 6vw, 120px));
+    max-width: none;
+  }
+}
+
+@media (min-width: 1051px) {
+  .product-live-callout { right: clamp(32px, 4vw, 84px); }
 }
