@@ -1,5 +1,11 @@
 const CONFETTI_COLOURS = ["#d99a2b", "#a63a2e", "#4f7a3d", "#2f6f73", "#70486f", "#f7f2e6"];
 const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+const DEMO_DURATIONS = {
+  photo: 15000,
+  product: 10200,
+  likes: 4000,
+  market: 5500,
+};
 
 function getRoles(root) {
   return [...root.querySelectorAll("[data-role]")].reduce((roles, element) => {
@@ -414,7 +420,7 @@ function createChapterController(root) {
   const roles = getRoles(root);
   const demoName = root.dataset.demoChapter;
   let timers = [];
-  let hasPlayed = false;
+  let state = "idle";
 
   function clearTimers() {
     timers.forEach((timer) => window.clearTimeout(timer));
@@ -423,16 +429,48 @@ function createChapterController(root) {
 
   function play() {
     clearTimers();
-    hasPlayed = true;
+    state = "running";
+    root.dataset.demoState = state;
+    root.classList.add("is-paused");
     root.classList.add("is-in-view");
     if (demoName === "photo") playPhoto(root, roles, timers);
     if (demoName === "product") playProduct(root, roles, timers);
     if (demoName === "likes") playLikes(root, roles, timers);
     if (demoName === "market") playMarket(root, roles, timers);
+    void root.offsetWidth;
+    root.classList.remove("is-paused");
+
+    if (reducedMotion) {
+      state = "completed";
+      root.dataset.demoState = state;
+      return;
+    }
+
+    schedule(timers, DEMO_DURATIONS[demoName], () => {
+      state = "completed";
+      root.dataset.demoState = state;
+      timers = [];
+    });
+  }
+
+  function stop() {
+    if (state !== "running") return;
+    clearTimers();
+    state = "interrupted";
+    root.dataset.demoState = state;
+    root.classList.add("is-paused");
+    root.querySelectorAll(".demo-confetti, .khaya-heart").forEach((element) => element.remove());
   }
 
   roles.replay.addEventListener("click", play);
-  return { play, get hasPlayed() { return hasPlayed; } };
+  root.dataset.demoState = state;
+  return {
+    play,
+    stop,
+    get isRunning() { return state === "running"; },
+    get isCompleted() { return state === "completed"; },
+    get shouldAutoPlay() { return state === "idle" || state === "interrupted"; },
+  };
 }
 
 export function initialisePhoneDemo() {
@@ -445,102 +483,107 @@ export function initialisePhoneDemo() {
     return;
   }
 
-  if (window.matchMedia("(max-width: 880px)").matches) {
-    const visibleChapters = new Set();
-    const nav = document.querySelector(".nav");
-    let settleTimer;
-    let isAutoSnapping = false;
+  const visibleChapters = new Set();
+  const nav = document.querySelector(".nav");
+  let settleTimer;
+  let snapTimer;
+  let isAutoSnapping = false;
 
-    const isFullySettled = (chapter) => {
-      const chapterRect = chapter.getBoundingClientRect();
-      const navBottom = nav?.getBoundingClientRect().bottom || 76;
-      const viewportTop = window.visualViewport?.offsetTop || 0;
-      const viewportBottom = viewportTop + (window.visualViewport?.height || window.innerHeight);
-      const tolerance = 6;
+  const isFullySettled = (chapter) => {
+    const chapterRect = chapter.getBoundingClientRect();
+    const navBottom = nav?.getBoundingClientRect().bottom || 76;
+    const viewportTop = window.visualViewport?.offsetTop || 0;
+    const viewportBottom = viewportTop + (window.visualViewport?.height || window.innerHeight);
+    const tolerance = 6;
 
-      return Math.abs(chapterRect.top - navBottom) <= tolerance
-        && chapterRect.top >= navBottom - tolerance
-        && chapterRect.bottom <= viewportBottom + tolerance;
-    };
+    return Math.abs(chapterRect.top - navBottom) <= tolerance
+      && chapterRect.top >= navBottom - tolerance
+      && chapterRect.bottom <= viewportBottom + tolerance;
+  };
 
-    const visibleRatio = (chapter) => {
-      const chapterRect = chapter.getBoundingClientRect();
-      const navBottom = nav?.getBoundingClientRect().bottom || 76;
-      const viewportTop = window.visualViewport?.offsetTop || 0;
-      const viewportBottom = viewportTop + (window.visualViewport?.height || window.innerHeight);
-      const visibleTop = Math.max(chapterRect.top, navBottom);
-      const visibleBottom = Math.min(chapterRect.bottom, viewportBottom);
-      return Math.max(0, visibleBottom - visibleTop) / chapterRect.height;
-    };
+  const visibleRatio = (chapter) => {
+    const chapterRect = chapter.getBoundingClientRect();
+    const navBottom = nav?.getBoundingClientRect().bottom || 76;
+    const viewportTop = window.visualViewport?.offsetTop || 0;
+    const viewportBottom = viewportTop + (window.visualViewport?.height || window.innerHeight);
+    const visibleTop = Math.max(chapterRect.top, navBottom);
+    const visibleBottom = Math.min(chapterRect.bottom, viewportBottom);
+    return Math.max(0, visibleBottom - visibleTop) / chapterRect.height;
+  };
 
-    const settleVisibleChapter = () => {
-      let snapCandidate;
-      let bestVisibleRatio = 0;
+  const stopDepartedAnimations = () => {
+    chapters.forEach((chapter) => {
+      const controller = controllers.get(chapter);
+      if (controller.isRunning && !isFullySettled(chapter)) controller.stop();
+    });
+  };
 
-      visibleChapters.forEach((chapter) => {
-        const controller = controllers.get(chapter);
-        if (controller.hasPlayed) return;
-        if (isFullySettled(chapter)) {
-          controller.play();
-          visibleChapters.delete(chapter);
-          observer.unobserve(chapter);
-          return;
-        }
+  const settleVisibleChapter = () => {
+    if (document.hidden) return;
 
-        const ratio = visibleRatio(chapter);
-        if (ratio > bestVisibleRatio) {
-          bestVisibleRatio = ratio;
-          snapCandidate = chapter;
-        }
-      });
+    let snapCandidate;
+    let bestVisibleRatio = 0;
 
-      if (isAutoSnapping || !snapCandidate || bestVisibleRatio < .72) return;
+    visibleChapters.forEach((chapter) => {
+      const controller = controllers.get(chapter);
+      if (controller.shouldAutoPlay && isFullySettled(chapter)) {
+        controller.play();
+        return;
+      }
+      if (!controller.shouldAutoPlay) return;
 
-      const chapterTop = snapCandidate.getBoundingClientRect().top;
-      const navBottom = nav?.getBoundingClientRect().bottom || 76;
-      const targetScroll = Math.round(window.scrollY + chapterTop - navBottom);
-      if (Math.abs(targetScroll - window.scrollY) <= 6) return;
+      const ratio = visibleRatio(chapter);
+      if (ratio > bestVisibleRatio) {
+        bestVisibleRatio = ratio;
+        snapCandidate = chapter;
+      }
+    });
 
-      isAutoSnapping = true;
-      window.scrollTo({ top: targetScroll, behavior: "smooth" });
-      window.setTimeout(() => {
-        isAutoSnapping = false;
-        scheduleSettledCheck();
-      }, 450);
-    };
+    if (isAutoSnapping || !snapCandidate || bestVisibleRatio < .72) return;
 
-    const scheduleSettledCheck = () => {
-      window.clearTimeout(settleTimer);
-      settleTimer = window.setTimeout(settleVisibleChapter, 220);
-    };
+    const chapterTop = snapCandidate.getBoundingClientRect().top;
+    const navBottom = nav?.getBoundingClientRect().bottom || 76;
+    const targetScroll = Math.round(window.scrollY + chapterTop - navBottom);
+    if (Math.abs(targetScroll - window.scrollY) <= 6) return;
 
-    const observer = new IntersectionObserver((entries) => {
-      entries.forEach((entry) => {
-        const controller = controllers.get(entry.target);
-        if (controller.hasPlayed) return;
-        if (entry.isIntersecting) visibleChapters.add(entry.target);
-        else visibleChapters.delete(entry.target);
-      });
+    isAutoSnapping = true;
+    window.scrollTo({ top: targetScroll, behavior: "smooth" });
+    window.clearTimeout(snapTimer);
+    snapTimer = window.setTimeout(() => {
+      isAutoSnapping = false;
       scheduleSettledCheck();
-    }, { threshold: [0, .5, .95, 1] });
+    }, 450);
+  };
 
-    chapters.forEach((chapter) => observer.observe(chapter));
-    window.addEventListener("scroll", scheduleSettledCheck, { passive: true });
-    window.addEventListener("scrollend", scheduleSettledCheck, { passive: true });
-    window.visualViewport?.addEventListener("resize", scheduleSettledCheck, { passive: true });
-    scheduleSettledCheck();
-    return;
-  }
+  const scheduleSettledCheck = () => {
+    window.clearTimeout(settleTimer);
+    settleTimer = window.setTimeout(settleVisibleChapter, 220);
+  };
 
   const observer = new IntersectionObserver((entries) => {
     entries.forEach((entry) => {
-      const controller = controllers.get(entry.target);
-      if (!entry.isIntersecting || controller.hasPlayed) return;
-      entry.target.classList.add("is-in-view");
-      window.setTimeout(() => controller.play(), 550);
-      observer.unobserve(entry.target);
+      if (entry.isIntersecting) visibleChapters.add(entry.target);
+      else visibleChapters.delete(entry.target);
     });
-  }, { threshold: .28, rootMargin: "0px 0px -8%" });
+    scheduleSettledCheck();
+  }, { threshold: [0, .5, .72, .95, 1] });
 
   chapters.forEach((chapter) => observer.observe(chapter));
+  window.addEventListener("scroll", () => {
+    stopDepartedAnimations();
+    scheduleSettledCheck();
+  }, { passive: true });
+  window.addEventListener("scrollend", scheduleSettledCheck, { passive: true });
+  window.visualViewport?.addEventListener("resize", () => {
+    stopDepartedAnimations();
+    scheduleSettledCheck();
+  }, { passive: true });
+  document.addEventListener("visibilitychange", () => {
+    if (document.hidden) {
+      controllers.forEach((controller) => controller.stop());
+      return;
+    }
+    scheduleSettledCheck();
+  });
+  scheduleSettledCheck();
 }
