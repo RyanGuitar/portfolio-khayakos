@@ -469,171 +469,231 @@ export function initialisePhoneDemo() {
   if (!chapters.length) return;
 
   const controllers = new Map(chapters.map((chapter) => [chapter, createChapterController(chapter)]));
-  if (reducedMotion || !("IntersectionObserver" in window)) {
+  if (reducedMotion) {
     controllers.forEach((controller) => controller.play());
     return;
   }
 
-  const visibleChapters = new Set();
   const nav = document.querySelector(".nav");
-  let settleTimer;
-  let snapTimer;
-  let isAutoSnapping = false;
+  const hero = document.querySelector(".hero");
+  const snapSections = [hero, ...chapters].filter(Boolean);
+  let scrollFrame;
+  let unlockTimer;
+  let wheelResetTimer;
+  let isNavigating = false;
+  let gestureLocked = false;
   let activeChapter = null;
   let lastScrollY = window.scrollY;
-  let intentDirection = 0;
-  let intentDistance = 0;
-  const mobileViewport = window.matchMedia("(max-width: 880px)");
+  let wheelDirection = 0;
+  let wheelDistance = 0;
+  let fallbackDirection = 0;
+  let fallbackDistance = 0;
+  let touchStartY = null;
 
-  const isFullySettled = (chapter) => {
-    const chapterRect = chapter.getBoundingClientRect();
-    const navBottom = nav?.getBoundingClientRect().bottom || 76;
-    const viewportTop = window.visualViewport?.offsetTop || 0;
-    const viewportBottom = viewportTop + (window.visualViewport?.height || window.innerHeight);
-    const tolerance = 6;
+  const navHeight = () => nav?.getBoundingClientRect().height || 76;
+  const sectionScrollTop = (section) => Math.max(
+    0,
+    Math.round(window.scrollY + section.getBoundingClientRect().top - navHeight()),
+  );
+  const isAligned = (section) => Math.abs(window.scrollY - sectionScrollTop(section)) <= 12;
 
-    return Math.abs(chapterRect.top - navBottom) <= tolerance
-      && chapterRect.top >= navBottom - tolerance
-      && chapterRect.bottom <= viewportBottom + tolerance;
-  };
+  const activateChapter = (chapter) => {
+    const controller = controllers.get(chapter);
+    activeChapter = chapter;
 
-  const visibleRatio = (chapter) => {
-    const chapterRect = chapter.getBoundingClientRect();
-    const navBottom = nav?.getBoundingClientRect().bottom || 76;
-    const viewportTop = window.visualViewport?.offsetTop || 0;
-    const viewportBottom = viewportTop + (window.visualViewport?.height || window.innerHeight);
-    const visibleTop = Math.max(chapterRect.top, navBottom);
-    const visibleBottom = Math.min(chapterRect.bottom, viewportBottom);
-    return Math.max(0, visibleBottom - visibleTop) / chapterRect.height;
-  };
-
-  const stopDepartedAnimations = () => {
-    chapters.forEach((chapter) => {
-      const controller = controllers.get(chapter);
-      if (controller.isRunning && !isFullySettled(chapter)) controller.stop();
-    });
-  };
-
-  const beginSnap = (target) => {
-    if (isAutoSnapping || !target) return;
-
-    const chapterTop = target.getBoundingClientRect().top;
-    const navBottom = nav?.getBoundingClientRect().bottom || 76;
-    const targetScroll = Math.round(window.scrollY + chapterTop - navBottom);
-    if (Math.abs(targetScroll - window.scrollY) <= 6) return;
-
-    if (activeChapter && activeChapter !== target) {
-      activeChapter.classList.remove("is-in-view");
+    if (controller.shouldAutoPlay) {
+      controller.play();
+      return;
     }
-    target.classList.remove("is-in-view");
-
-    isAutoSnapping = true;
-    intentDistance = 0;
-    window.scrollTo({ top: targetScroll, behavior: "smooth" });
-    window.clearTimeout(snapTimer);
-    snapTimer = window.setTimeout(() => {
-      isAutoSnapping = false;
-      lastScrollY = window.scrollY;
-      scheduleSettledCheck();
-    }, 520);
+    chapter.classList.remove("is-paused");
+    chapter.classList.add("is-in-view");
   };
 
-  const intendedChapter = () => {
-    if (!intentDirection) return null;
+  const pauseRunningAnimations = () => {
+    controllers.forEach((controller) => controller.stop());
+  };
 
-    if (activeChapter) {
-      const activeIndex = chapters.indexOf(activeChapter);
-      return chapters[activeIndex + intentDirection] || null;
+  const targetForDirection = (direction) => {
+    const currentScroll = window.scrollY;
+    const tolerance = 12;
+    if (direction > 0) {
+      return snapSections.find((section) => sectionScrollTop(section) > currentScroll + tolerance) || null;
+    }
+    return [...snapSections].reverse().find(
+      (section) => sectionScrollTop(section) < currentScroll - tolerance,
+    ) || null;
+  };
+
+  const resetInputIntent = () => {
+    wheelDirection = 0;
+    wheelDistance = 0;
+    fallbackDirection = 0;
+    fallbackDistance = 0;
+  };
+
+  const releaseGestureAfterPause = () => {
+    window.clearTimeout(unlockTimer);
+    unlockTimer = window.setTimeout(() => {
+      gestureLocked = false;
+      resetInputIntent();
+    }, 180);
+  };
+
+  const finishNavigation = (target, destination) => {
+    window.scrollTo(0, destination);
+    isNavigating = false;
+    lastScrollY = window.scrollY;
+    resetInputIntent();
+
+    if (controllers.has(target)) activateChapter(target);
+    else activeChapter = null;
+
+    releaseGestureAfterPause();
+  };
+
+  const navigateTo = (target) => {
+    if (!target || isNavigating || gestureLocked) return false;
+
+    const destination = sectionScrollTop(target);
+    const start = window.scrollY;
+    const distance = destination - start;
+    if (Math.abs(distance) <= 2) {
+      finishNavigation(target, destination);
+      return true;
     }
 
-    let candidate = null;
-    let bestRatio = 0;
-    visibleChapters.forEach((chapter) => {
-      const ratio = visibleRatio(chapter);
-      if (ratio > bestRatio) {
-        bestRatio = ratio;
-        candidate = chapter;
-      }
-    });
-    return candidate;
-  };
+    isNavigating = true;
+    gestureLocked = true;
+    pauseRunningAnimations();
+    chapters.forEach((chapter) => chapter.classList.remove("is-in-view"));
 
-  const commitIntentIfReady = () => {
-    if (isAutoSnapping || !intentDirection) return;
+    const duration = Math.min(560, Math.max(380, Math.abs(distance) * .55));
+    let startedAt;
+    const easeOutQuart = (progress) => 1 - ((1 - progress) ** 4);
 
-    const target = intendedChapter();
-    if (!target) return;
-
-    const minimumDistance = mobileViewport.matches ? 56 : 90;
-    const minimumVisibleRatio = mobileViewport.matches ? .1 : .14;
-    if (intentDistance < minimumDistance || visibleRatio(target) < minimumVisibleRatio) return;
-
-    beginSnap(target);
-  };
-
-  const settleVisibleChapter = () => {
-    if (document.hidden) return;
-
-    visibleChapters.forEach((chapter) => {
-      if (!isFullySettled(chapter)) return;
-
-      const controller = controllers.get(chapter);
-      activeChapter = chapter;
-      intentDistance = 0;
-
-      if (controller.shouldAutoPlay) {
-        controller.play();
+    const step = (timestamp) => {
+      if (startedAt === undefined) startedAt = timestamp;
+      const progress = Math.min(1, (timestamp - startedAt) / duration);
+      window.scrollTo(0, start + distance * easeOutQuart(progress));
+      if (progress < 1) {
+        scrollFrame = window.requestAnimationFrame(step);
         return;
       }
-      chapter.classList.remove("is-paused");
-      chapter.classList.add("is-in-view");
-    });
+      finishNavigation(target, destination);
+    };
+
+    window.cancelAnimationFrame(scrollFrame);
+    scrollFrame = window.requestAnimationFrame(step);
+    return true;
   };
 
-  const scheduleSettledCheck = () => {
-    window.clearTimeout(settleTimer);
-    settleTimer = window.setTimeout(settleVisibleChapter, 140);
+  const navigateInDirection = (direction) => navigateTo(targetForDirection(direction));
+
+  window.addEventListener("wheel", (event) => {
+    const direction = Math.sign(event.deltaY);
+    if (!direction) return;
+
+    pauseRunningAnimations();
+    const target = targetForDirection(direction);
+    if (!target) return;
+
+    event.preventDefault();
+
+    if (isNavigating || gestureLocked) {
+      releaseGestureAfterPause();
+      return;
+    }
+
+    if (direction !== wheelDirection) {
+      wheelDirection = direction;
+      wheelDistance = 0;
+    }
+    wheelDistance += Math.abs(event.deltaY);
+
+    window.clearTimeout(wheelResetTimer);
+    wheelResetTimer = window.setTimeout(() => {
+      wheelDirection = 0;
+      wheelDistance = 0;
+    }, 120);
+
+    if (wheelDistance >= 10) navigateTo(target);
+  }, { passive: false });
+
+  window.addEventListener("touchstart", (event) => {
+    if (event.touches.length !== 1 || isNavigating) return;
+    touchStartY = event.touches[0].clientY;
+  }, { passive: true });
+
+  window.addEventListener("touchmove", (event) => {
+    if (touchStartY === null || event.touches.length !== 1) return;
+
+    const delta = touchStartY - event.touches[0].clientY;
+    const direction = Math.sign(delta);
+    if (!direction) return;
+
+    pauseRunningAnimations();
+    const target = targetForDirection(direction);
+    if (!target) return;
+
+    event.preventDefault();
+    if (isNavigating || gestureLocked) return;
+    if (Math.abs(delta) >= 10 && navigateTo(target)) touchStartY = null;
+  }, { passive: false });
+
+  const clearTouch = () => {
+    touchStartY = null;
   };
+  window.addEventListener("touchend", clearTouch, { passive: true });
+  window.addEventListener("touchcancel", clearTouch, { passive: true });
 
-  const observer = new IntersectionObserver((entries) => {
-    entries.forEach((entry) => {
-      if (entry.isIntersecting) visibleChapters.add(entry.target);
-      else visibleChapters.delete(entry.target);
-    });
-    commitIntentIfReady();
-    scheduleSettledCheck();
-  }, { threshold: [0, .1, .14, .5, .95, 1] });
+  window.addEventListener("keydown", (event) => {
+    const interactiveTarget = event.target.closest?.("button, input, textarea, select, a");
+    if (interactiveTarget) return;
 
-  chapters.forEach((chapter) => observer.observe(chapter));
+    let direction = 0;
+    if (["ArrowDown", "PageDown"].includes(event.key) || (event.key === " " && !event.shiftKey)) direction = 1;
+    if (["ArrowUp", "PageUp"].includes(event.key) || (event.key === " " && event.shiftKey)) direction = -1;
+    if (!direction || !targetForDirection(direction)) return;
+
+    event.preventDefault();
+    navigateInDirection(direction);
+  });
+
   window.addEventListener("scroll", () => {
     const currentScrollY = window.scrollY;
     const delta = currentScrollY - lastScrollY;
     lastScrollY = currentScrollY;
+    if (isNavigating || gestureLocked || Math.abs(delta) < 1) return;
 
-    if (!isAutoSnapping && Math.abs(delta) >= 1) {
-      const direction = delta > 0 ? 1 : -1;
-      if (direction !== intentDirection) {
-        intentDirection = direction;
-        intentDistance = 0;
+    const alignedChapter = chapters.find((chapter) => isAligned(chapter));
+    if (alignedChapter) {
+      resetInputIntent();
+      if (alignedChapter !== activeChapter || !alignedChapter.classList.contains("is-in-view")) {
+        activateChapter(alignedChapter);
       }
-      intentDistance += Math.abs(delta);
-    }
-
-    stopDepartedAnimations();
-    commitIntentIfReady();
-    scheduleSettledCheck();
-  }, { passive: true });
-  window.addEventListener("scrollend", scheduleSettledCheck, { passive: true });
-  window.visualViewport?.addEventListener("resize", () => {
-    stopDepartedAnimations();
-    scheduleSettledCheck();
-  }, { passive: true });
-  document.addEventListener("visibilitychange", () => {
-    if (document.hidden) {
-      controllers.forEach((controller) => controller.stop());
       return;
     }
-    scheduleSettledCheck();
+
+    pauseRunningAnimations();
+    const direction = Math.sign(delta);
+    if (direction !== fallbackDirection) {
+      fallbackDirection = direction;
+      fallbackDistance = 0;
+    }
+    fallbackDistance += Math.abs(delta);
+    if (fallbackDistance >= 10) navigateInDirection(direction);
+  }, { passive: true });
+
+  window.visualViewport?.addEventListener("resize", () => {
+    lastScrollY = window.scrollY;
+  }, { passive: true });
+
+  document.addEventListener("visibilitychange", () => {
+    if (document.hidden) {
+      pauseRunningAnimations();
+    }
   });
-  scheduleSettledCheck();
+
+  const initiallyAlignedChapter = chapters.find((chapter) => isAligned(chapter));
+  if (initiallyAlignedChapter) activateChapter(initiallyAlignedChapter);
 }

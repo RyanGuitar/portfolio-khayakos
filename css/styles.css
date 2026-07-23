@@ -13,7 +13,7 @@
 }
 
 * { box-sizing: border-box; }
-html { scroll-behavior: smooth; }
+html { scroll-behavior: auto; }
 body {
   margin: 0;
   background: var(--paper);
@@ -1339,7 +1339,6 @@ footer { padding: 34px 0 45px; border-top: 1px solid var(--line); }
 /* Shared viewport-section system */
 :root { --nav-height: 88px; }
 html { scroll-padding-top: var(--nav-height); }
-html { scroll-snap-type: y proximity; }
 body { padding-top: var(--nav-height); }
 .nav { position: fixed; left: 0; right: 0; width: 100%; }
 .nav-row { position: relative; height: var(--nav-height); }
@@ -1442,8 +1441,6 @@ body { padding-top: var(--nav-height); }
   .brand-copy small { font-size: .74rem; }
   .demo-chapter {
     scroll-margin-top: 0;
-    scroll-snap-align: start;
-    scroll-snap-stop: always;
   }
   .dual-phone-visual,
   .likes-dual-visual,
@@ -1504,7 +1501,6 @@ body { padding-top: var(--nav-height); }
   }
   html {
     scroll-padding-top: var(--nav-height);
-    scroll-snap-type: y proximity;
   }
   .hero {
     height: var(--mobile-section-height);
@@ -1520,8 +1516,6 @@ body { padding-top: var(--nav-height); }
     contain: size layout paint;
     overflow-anchor: none;
     scroll-margin-top: 0;
-    scroll-snap-align: start;
-    scroll-snap-stop: always;
   }
   .demo-stories { overflow-anchor: none; }
   .nav-row { height: var(--nav-height); }
