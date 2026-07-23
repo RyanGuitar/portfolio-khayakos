@@ -1486,6 +1486,10 @@ body { padding-top: var(--nav-height); }
 
 @media (max-width: 880px) {
   :root { --nav-height: 76px; }
+  .hero,
+  .demo-chapter {
+    height: calc(100svh - var(--nav-height));
+  }
   .nav-row { height: var(--nav-height); }
   .nav-links { display: none; }
   .nav-toggle { display: grid; flex: 0 0 auto; }
@@ -1501,7 +1505,8 @@ body { padding-top: var(--nav-height); }
   .product-hero-grid .hero-copy,
   .chapter-copy { padding: clamp(16px, 5vw, 32px); }
   .product-hero-visual {
-    --hero-phone-scale: .48;
+    container-name: hero-visual;
+    container-type: size;
     margin: 0;
     overflow: hidden;
   }
@@ -1511,7 +1516,7 @@ body { padding-top: var(--nav-height); }
     left: 50%;
     top: 50%;
     translate: -50% -50%;
-    scale: var(--hero-phone-scale);
+    scale: .38;
     box-shadow: 0 18px 36px rgba(20, 50, 75, .16);
   }
   .chapter-visual { scale: .52; }
@@ -1553,36 +1558,37 @@ body { padding-top: var(--nav-height); }
   .chapter-visual { scale: .43; }
 }
 
-/* Fill the mobile hero's visual half while keeping the complete phone visible. */
-@media (max-width: 880px) and (max-height: 600px) {
-  .product-hero-visual { --hero-phone-scale: .4; }
+/* Size the phone from its stable half-section, not the changing browser viewport. */
+@container hero-visual (min-height: 250px) { .product-hero-phone { scale: .4; } }
+@container hero-visual (min-height: 270px) { .product-hero-phone { scale: .44; } }
+@container hero-visual (min-height: 290px) { .product-hero-phone { scale: .47; } }
+@container hero-visual (min-height: 310px) { .product-hero-phone { scale: .5; } }
+@container hero-visual (min-height: 330px) { .product-hero-phone { scale: .53; } }
+@container hero-visual (min-height: 350px) { .product-hero-phone { scale: .56; } }
+@container hero-visual (min-height: 380px) { .product-hero-phone { scale: .61; } }
+@container hero-visual (min-height: 410px) { .product-hero-phone { scale: .66; } }
+@container hero-visual (min-height: 450px) { .product-hero-phone { scale: .72; } }
+@container hero-visual (min-height: 490px) { .product-hero-phone { scale: .78; } }
+@container hero-visual (min-height: 530px) { .product-hero-phone { scale: .84; } }
+@container hero-visual (min-height: 570px) { .product-hero-phone { scale: .9; } }
+@container hero-visual (min-height: 620px) { .product-hero-phone { scale: 1; } }
+
+@media (max-width: 430px) {
+  .product-hero-phone { scale: .44; }
+  @container hero-visual (min-height: 250px) { .product-hero-phone { scale: .46; } }
+  @container hero-visual (min-height: 270px) { .product-hero-phone { scale: .5; } }
+  @container hero-visual (min-height: 290px) { .product-hero-phone { scale: .54; } }
+  @container hero-visual (min-height: 310px) { .product-hero-phone { scale: .58; } }
+  @container hero-visual (min-height: 330px) { .product-hero-phone { scale: .62; } }
+  @container hero-visual (min-height: 350px) { .product-hero-phone { scale: .66; } }
+  @container hero-visual (min-height: 380px) { .product-hero-phone { scale: .72; } }
+  @container hero-visual (min-height: 410px) { .product-hero-phone { scale: .78; } }
+  @container hero-visual (min-height: 450px) { .product-hero-phone { scale: .85; } }
+  @container hero-visual (min-height: 490px) { .product-hero-phone { scale: .93; } }
+  @container hero-visual (min-height: 530px) { .product-hero-phone { scale: 1; } }
 }
 
-@media (max-width: 880px) and (max-height: 500px) {
-  .product-hero-visual { --hero-phone-scale: .34; }
-}
-
-@media (max-width: 880px) and (min-height: 701px) {
-  .product-hero-visual { --hero-phone-scale: .56; }
-}
-
-@media (max-width: 880px) and (min-height: 801px) {
-  .product-hero-visual { --hero-phone-scale: .64; }
-}
-
-@media (max-width: 880px) and (min-height: 901px) {
-  .product-hero-visual { --hero-phone-scale: .76; }
-}
-
-@media (max-width: 880px) and (min-height: 1051px) {
-  .product-hero-visual { --hero-phone-scale: .9; }
-}
-
-@media (max-width: 880px) and (min-height: 1251px) {
-  .product-hero-visual { --hero-phone-scale: 1; }
-}
-
-@media (max-width: 880px) and (orientation: landscape) and (max-height: 600px) {
+@media (max-width: 880px) and (orientation: landscape) {
   .hero > .product-hero-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
     grid-template-rows: minmax(0, 1fr);
@@ -1591,6 +1597,5 @@ body { padding-top: var(--nav-height); }
   .product-eyebrow { margin-bottom: 8px; font-size: .56rem; }
   .product-hero-grid h1 { font-size: clamp(2rem, 6vw, 3.2rem); }
   .product-hero-grid .hero-lead { margin-top: 10px; font-size: .76rem; }
-  .product-hero-visual { --hero-phone-scale: .54; }
   .product-live-callout { display: none; }
 }
