@@ -149,6 +149,9 @@ function finishPhoto(root, roles) {
 }
 
 function playPhoto(root, roles, timers) {
+  root.querySelectorAll('img[src$="moist-chocolate-cake.jpeg"]').forEach((image) => {
+    image.loading = "eager";
+  });
   resetPhoto(root, roles);
   if (reducedMotion) {
     finishPhoto(root, roles);

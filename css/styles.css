@@ -1894,7 +1894,8 @@ body { padding-top: var(--nav-height); }
 
 /* Desktop landing-page refinements */
 @media (min-width: 881px) {
-  .nav-row.wrap {
+  .nav-row.wrap,
+  .footer-row.wrap {
     width: calc(100% - clamp(64px, 6vw, 120px));
     max-width: none;
   }
