@@ -421,7 +421,6 @@ function createChapterController(root) {
     state = "running";
     root.dataset.demoState = state;
     root.classList.add("is-paused");
-    root.classList.remove("is-in-view");
     if (demoName === "photo") playPhoto(root, roles, timers);
     if (demoName === "product") playProduct(root, roles, timers);
     if (demoName === "likes") playLikes(root, roles, timers);
@@ -453,14 +452,17 @@ function createChapterController(root) {
     root.querySelectorAll(".demo-confetti, .khaya-heart").forEach((element) => element.remove());
   }
 
-  roles.replay.addEventListener("click", play);
+  roles.replay.addEventListener("click", (event) => {
+    event.preventDefault();
+    event.stopPropagation();
+    play();
+  });
   root.dataset.demoState = state;
   return {
     play,
     stop,
     get isRunning() { return state === "running"; },
     get isCompleted() { return state === "completed"; },
-    get shouldAutoPlay() { return state === "idle" || state === "interrupted"; },
   };
 }
 
@@ -503,13 +505,7 @@ export function initialisePhoneDemo() {
   const activateChapter = (chapter) => {
     const controller = controllers.get(chapter);
     activeChapter = chapter;
-
-    if (controller.shouldAutoPlay) {
-      controller.play();
-      return;
-    }
-    chapter.classList.remove("is-paused");
-    chapter.classList.add("is-in-view");
+    controller.play();
   };
 
   const pauseRunningAnimations = () => {
@@ -625,7 +621,6 @@ export function initialisePhoneDemo() {
       lastWheelMagnitude = 0;
     }, 140);
 
-    pauseRunningAnimations();
     const target = targetForDirection(direction);
     if (!target) return;
 
@@ -649,7 +644,6 @@ export function initialisePhoneDemo() {
     const direction = Math.sign(delta);
     if (!direction) return;
 
-    pauseRunningAnimations();
     const target = targetForDirection(direction);
     if (!target) return;
 
