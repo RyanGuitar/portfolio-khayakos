@@ -377,16 +377,16 @@ function playLikes(root, roles, timers) {
 
 function resetMarket(root, roles) {
   root.querySelectorAll(".demo-confetti").forEach((piece) => piece.remove());
-  roles.marketToggle.classList.remove("is-opening", "is-open");
+  roles.marketToggle.classList.remove("is-open");
   roles.marketToggle.setAttribute("aria-label", "Market closed. Tap to open");
   roles.marketToggleTitle.textContent = "Market closed";
   roles.marketToggleDetail.textContent = "Tap to open";
-  roles.marketTapCue.classList.remove("is-visible");
   roles.marketVisitorScroll.classList.remove("is-scrolled");
   roles.visitorMarketStatus.classList.remove("is-open");
   roles.visitorStatusTitle.textContent = "Market closed";
   roles.visitorStatusDetail.textContent = "Check back soon";
-  roles.visitorClosedLabel.textContent = "Market closed · Check back soon";
+  roles.visitorClosedLabel.textContent = "When the stall opens, you’ll see today’s selection and remaining stock update in real time.";
+  setHidden(roles.visitorClosedCard, false);
   setHidden(roles.marketOwnerToast, true);
   setHidden(roles.marketVisitorToast, true);
   setHidden(roles.visitorProductGrid, true);
@@ -402,7 +402,6 @@ function playMarket(root, roles, timers) {
   resetMarket(root, roles);
 
   const openOwnerMarket = () => {
-    roles.marketToggle.classList.remove("is-opening");
     roles.marketToggle.classList.add("is-open");
     roles.marketToggle.setAttribute("aria-label", "Market open. Tap to close");
     roles.marketToggleTitle.textContent = "Market open";
@@ -414,27 +413,49 @@ function playMarket(root, roles, timers) {
     setStatus(roles, "The owner receives confirmation that the market is open.");
   };
 
+  const revealVisitorMarket = () => {
+    setHidden(roles.visitorClosedCard, true);
+    roles.visitorMarketStatus.classList.add("is-open");
+    roles.visitorStatusTitle.textContent = "Open now";
+    roles.visitorStatusDetail.textContent = "at Gazebo Valley";
+    setHidden(roles.visitorProductGrid, false);
+    roles.marketVisitorScroll.classList.add("is-scrolled");
+    roles.marketVisitorLabel.textContent = "Updating live…";
+    roles.marketVisitorLabel.classList.add("is-updated");
+    setStatus(roles, "The closed-market card disappears and the live market snaps beneath the visitor navigation.");
+  };
+
+  const celebrateVisitor = () => {
+    setHidden(roles.marketVisitorToast, false);
+    celebrateMarketOpen(roles.marketVisitorScreen);
+    roles.marketVisitorLabel.textContent = "Market opened";
+    setStatus(roles, "The visitor receives the same market-open popup and confetti.");
+  };
+
   const finishMarket = () => {
     roles.marketOwnerLabel.textContent = "Open";
+    roles.marketVisitorLabel.textContent = "Open · synced live";
+    setHidden(roles.marketVisitorToast, true);
     root.classList.add("is-complete");
-    setStatus(roles, "The owner’s phone remains in its open-market edit state.");
+    setStatus(roles, "Both phones remain in their finished open-market states.");
   };
 
   if (reducedMotion) {
     openOwnerMarket();
     setHidden(roles.marketOwnerToast, true);
+    revealVisitorMarket();
     finishMarket();
     return;
   }
 
   schedule(timers, 1250, () => {
-    roles.marketTapCue.classList.add("is-visible");
-    roles.marketToggle.classList.add("is-opening");
     setStatus(roles, "The owner taps “Market closed · Tap to open”.");
   });
-  schedule(timers, 2050, () => roles.marketTapCue.classList.remove("is-visible"));
   schedule(timers, 2350, openOwnerMarket);
+  schedule(timers, 2350, revealVisitorMarket);
+  schedule(timers, 3250, celebrateVisitor);
   schedule(timers, 3950, () => setHidden(roles.marketOwnerToast, true));
+  schedule(timers, 4850, () => setHidden(roles.marketVisitorToast, true));
   schedule(timers, 7000, finishMarket);
 }
 
