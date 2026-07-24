@@ -4,7 +4,7 @@ const DEMO_DURATIONS = {
   photo: 15000,
   product: 10200,
   likes: 4000,
-  market: 10500,
+  market: 7500,
 };
 
 function getRoles(root) {
@@ -404,9 +404,9 @@ function playMarket(root, roles, timers) {
   const openOwnerMarket = () => {
     roles.marketToggle.classList.remove("is-opening");
     roles.marketToggle.classList.add("is-open");
-    roles.marketToggle.setAttribute("aria-label", "Market open. Live at Gazebo Valley");
+    roles.marketToggle.setAttribute("aria-label", "Market open. Tap to close");
     roles.marketToggleTitle.textContent = "Market open";
-    roles.marketToggleDetail.textContent = "Live at Gazebo Valley";
+    roles.marketToggleDetail.textContent = "Tap to close";
     setHidden(roles.marketOwnerToast, false);
     roles.marketOwnerLabel.textContent = "Market opened";
     roles.marketOwnerLabel.classList.add("is-updated");
@@ -414,41 +414,15 @@ function playMarket(root, roles, timers) {
     setStatus(roles, "The owner receives confirmation that the market is open.");
   };
 
-  const scrollVisitorToMarket = () => {
-    roles.marketVisitorScroll.classList.add("is-scrolled");
-    roles.visitorClosedLabel.textContent = "Updating live…";
-    setStatus(roles, "The connected visitor’s page scrolls to Live at the Market automatically.");
-  };
-
-  const openVisitorMarket = () => {
-    roles.visitorMarketStatus.classList.add("is-open");
-    roles.visitorStatusTitle.textContent = "Open now";
-    roles.visitorStatusDetail.textContent = "at Gazebo Valley";
-    setHidden(roles.visitorProductGrid, false);
-    roles.marketVisitorLabel.textContent = "Updated automatically";
-    roles.marketVisitorLabel.classList.add("is-updated");
-    setStatus(roles, "The visitor’s market changes to open and the live product grid appears.");
-  };
-
-  const celebrateVisitor = () => {
-    setHidden(roles.marketVisitorToast, false);
-    celebrateMarketOpen(roles.marketVisitorScreen);
-    setStatus(roles, "The visitor receives the same market-open confirmation and celebration.");
-  };
-
   const finishMarket = () => {
-    setHidden(roles.marketVisitorToast, true);
     roles.marketOwnerLabel.textContent = "Open";
-    roles.marketVisitorLabel.textContent = "Open · synced live";
     root.classList.add("is-complete");
-    setStatus(roles, "One owner tap has left both phones synchronized and open.");
+    setStatus(roles, "The owner’s phone remains in its open-market edit state.");
   };
 
   if (reducedMotion) {
     openOwnerMarket();
     setHidden(roles.marketOwnerToast, true);
-    scrollVisitorToMarket();
-    openVisitorMarket();
     finishMarket();
     return;
   }
@@ -461,10 +435,7 @@ function playMarket(root, roles, timers) {
   schedule(timers, 2050, () => roles.marketTapCue.classList.remove("is-visible"));
   schedule(timers, 2350, openOwnerMarket);
   schedule(timers, 3950, () => setHidden(roles.marketOwnerToast, true));
-  schedule(timers, 4100, scrollVisitorToMarket);
-  schedule(timers, 5650, openVisitorMarket);
-  schedule(timers, 6150, celebrateVisitor);
-  schedule(timers, 8350, finishMarket);
+  schedule(timers, 7000, finishMarket);
 }
 
 function createChapterController(root) {
