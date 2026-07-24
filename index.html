@@ -112,9 +112,9 @@
                           <div class="owner-photo-placeholder" data-role="owner-placeholder"><span>📷</span><strong>Add a photo</strong></div>
                           <button type="button" data-role="change-photo" tabindex="-1" aria-label="Add or change product photo"><span>📷</span></button>
                         </div>
-                        <label>Price (rand)<input data-role="owner-price-field" value="0" readonly tabindex="-1"></label>
-                        <label>Product name<input data-role="owner-name-field" value="New Item" readonly tabindex="-1"></label>
-                        <label>Description<textarea data-role="owner-description-field" readonly tabindex="-1">Add a short description here.</textarea></label>
+                        <label>Price (rand)<input id="new-product-price" name="new-product-price" data-role="owner-price-field" value="0" readonly tabindex="-1"></label>
+                        <label>Product name<input id="new-product-name" name="new-product-name" data-role="owner-name-field" value="New Item" readonly tabindex="-1"></label>
+                        <label>Description<textarea id="new-product-description" name="new-product-description" data-role="owner-description-field" readonly tabindex="-1">Add a short description here.</textarea></label>
                       </article>
                     </div>
                     <div class="photo-source-sheet" data-role="photo-sheet" hidden>
@@ -191,9 +191,9 @@
                   <article class="market-owner-card" data-role="product-owner-card">
                     <div class="market-owner-photo"><img src="assets/khaya/strawberry-cupcake.jpg" alt="Strawberry Cupcake"><span class="market-sold-stamp" data-role="owner-sold-stamp">Sold<br>Out</span></div>
                     <div class="market-owner-fields">
-                      <label>Price (rand)<input value="15" readonly tabindex="-1"></label>
-                      <label>Product name<input value="Strawberry Cupcake" readonly tabindex="-1"></label>
-                      <label>Description<textarea readonly tabindex="-1">Delicious moist strawberry cupcakes</textarea></label>
+                      <label>Price (rand)<input id="stock-product-price" name="stock-product-price" value="15" readonly tabindex="-1"></label>
+                      <label>Product name<input id="stock-product-name" name="stock-product-name" value="Strawberry Cupcake" readonly tabindex="-1"></label>
+                      <label>Description<textarea id="stock-product-description" name="stock-product-description" readonly tabindex="-1">Delicious moist strawberry cupcakes</textarea></label>
                       <span class="stock-label">Stock available</span>
                       <div class="stock-stepper"><button type="button" data-role="owner-minus" tabindex="-1" aria-label="Record one Strawberry Cupcake sold">−</button><strong data-role="owner-stock">5</strong><button type="button" tabindex="-1" aria-label="Add one Strawberry Cupcake back">+</button></div>
                     </div>
