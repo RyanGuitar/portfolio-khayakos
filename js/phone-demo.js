@@ -486,6 +486,9 @@ export function initialisePhoneDemo() {
   let lastScrollY = window.scrollY;
   let wheelDirection = 0;
   let wheelDistance = 0;
+  let wheelGestureConsumed = false;
+  let lastWheelAt = 0;
+  let lastWheelMagnitude = 0;
   let fallbackDirection = 0;
   let fallbackDistance = 0;
   let touchStartY = null;
@@ -535,7 +538,8 @@ export function initialisePhoneDemo() {
     window.clearTimeout(unlockTimer);
     unlockTimer = window.setTimeout(() => {
       gestureLocked = false;
-      resetInputIntent();
+      fallbackDirection = 0;
+      fallbackDistance = 0;
     }, 180);
   };
 
@@ -543,7 +547,8 @@ export function initialisePhoneDemo() {
     window.scrollTo(0, destination);
     isNavigating = false;
     lastScrollY = window.scrollY;
-    resetInputIntent();
+    fallbackDirection = 0;
+    fallbackDistance = 0;
 
     if (controllers.has(target)) activateChapter(target);
     else activeChapter = null;
@@ -593,30 +598,43 @@ export function initialisePhoneDemo() {
     const direction = Math.sign(event.deltaY);
     if (!direction) return;
 
+    const now = performance.now();
+    const magnitude = Math.abs(event.deltaY);
+    const startedAfterPause = now - lastWheelAt > 140;
+    const renewedImpulse = wheelGestureConsumed
+      && !isNavigating
+      && !gestureLocked
+      && direction === wheelDirection
+      && magnitude >= 6
+      && magnitude > lastWheelMagnitude * 1.8;
+
+    if (startedAfterPause || renewedImpulse || direction !== wheelDirection) {
+      wheelGestureConsumed = false;
+      wheelDistance = 0;
+    }
+
+    lastWheelAt = now;
+    lastWheelMagnitude = magnitude;
+    wheelDirection = direction;
+
+    window.clearTimeout(wheelResetTimer);
+    wheelResetTimer = window.setTimeout(() => {
+      wheelDirection = 0;
+      wheelDistance = 0;
+      wheelGestureConsumed = false;
+      lastWheelMagnitude = 0;
+    }, 140);
+
     pauseRunningAnimations();
     const target = targetForDirection(direction);
     if (!target) return;
 
     event.preventDefault();
 
-    if (isNavigating || gestureLocked) {
-      releaseGestureAfterPause();
-      return;
-    }
+    if (isNavigating || gestureLocked || wheelGestureConsumed) return;
 
-    if (direction !== wheelDirection) {
-      wheelDirection = direction;
-      wheelDistance = 0;
-    }
-    wheelDistance += Math.abs(event.deltaY);
-
-    window.clearTimeout(wheelResetTimer);
-    wheelResetTimer = window.setTimeout(() => {
-      wheelDirection = 0;
-      wheelDistance = 0;
-    }, 120);
-
-    if (wheelDistance >= 10) navigateTo(target);
+    wheelDistance += magnitude;
+    if (wheelDistance >= 10 && navigateTo(target)) wheelGestureConsumed = true;
   }, { passive: false });
 
   window.addEventListener("touchstart", (event) => {
