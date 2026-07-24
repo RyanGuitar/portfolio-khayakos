@@ -478,7 +478,13 @@ export function initialisePhoneDemo() {
 
   const nav = document.querySelector(".nav");
   const hero = document.querySelector(".hero");
-  const snapSections = [hero, ...chapters].filter(Boolean);
+  const closingSection = document.querySelector("[data-closing-section]");
+  const desktopViewport = window.matchMedia("(min-width: 881px)");
+  const snapSections = () => [
+    hero,
+    ...chapters,
+    ...(desktopViewport.matches ? [closingSection] : []),
+  ].filter(Boolean);
   let scrollFrame;
   let unlockTimer;
   let wheelResetTimer;
@@ -516,9 +522,9 @@ export function initialisePhoneDemo() {
     const currentScroll = window.scrollY;
     const tolerance = 12;
     if (direction > 0) {
-      return snapSections.find((section) => sectionScrollTop(section) > currentScroll + tolerance) || null;
+      return snapSections().find((section) => sectionScrollTop(section) > currentScroll + tolerance) || null;
     }
-    return [...snapSections].reverse().find(
+    return snapSections().reverse().find(
       (section) => sectionScrollTop(section) < currentScroll - tolerance,
     ) || null;
   };
