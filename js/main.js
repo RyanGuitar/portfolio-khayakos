@@ -1,6 +1,6 @@
 import { initialiseContactLinks } from "./contact-links.js";
 import { initialiseNavigation } from "./navigation.js";
-import { initialisePhoneDemo } from "./phone-demo.js?v=20260724-21";
+import { initialisePhoneDemo } from "./phone-demo.js?v=20260724-22";
 
 const mobileSectionQuery = window.matchMedia("(max-width: 880px)");
 let orientationLockTimer;

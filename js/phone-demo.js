@@ -4,7 +4,7 @@ const DEMO_DURATIONS = {
   photo: 15000,
   product: 10200,
   likes: 4000,
-  market: 5500,
+  market: 10500,
 };
 
 function getRoles(root) {
@@ -375,34 +375,93 @@ function playLikes(root, roles, timers) {
 function resetMarket(root, roles) {
   root.querySelectorAll(".demo-confetti").forEach((piece) => piece.remove());
   roles.marketToggle.classList.remove("is-opening", "is-open");
+  roles.marketToggle.setAttribute("aria-label", "Market closed. Tap to open");
   roles.marketToggleTitle.textContent = "Market closed";
   roles.marketToggleDetail.textContent = "Tap to open";
-  setHidden(roles.menuView, false);
-  setHidden(roles.marketView, true);
-  setStatus(roles, "Visitors are browsing the regular weekly menu.");
+  roles.marketTapCue.classList.remove("is-visible");
+  roles.marketVisitorScroll.classList.remove("is-scrolled");
+  roles.visitorMarketStatus.classList.remove("is-open");
+  roles.visitorStatusTitle.textContent = "Market closed";
+  roles.visitorStatusDetail.textContent = "Check back soon";
+  roles.visitorClosedLabel.textContent = "Market closed · Check back soon";
+  setHidden(roles.marketOwnerToast, true);
+  setHidden(roles.marketVisitorToast, true);
+  setHidden(roles.visitorProductGrid, true);
+  roles.marketOwnerLabel.textContent = "Owner’s phone";
+  roles.marketOwnerLabel.classList.remove("is-updated");
+  roles.marketVisitorLabel.textContent = "Visitor’s phone";
+  roles.marketVisitorLabel.classList.remove("is-updated");
+  root.classList.remove("is-complete");
+  setStatus(roles, "Both the owner and visitor begin with the Saturday market closed.");
 }
 
 function playMarket(root, roles, timers) {
   resetMarket(root, roles);
-  const openMarket = () => {
+
+  const openOwnerMarket = () => {
     roles.marketToggle.classList.remove("is-opening");
     roles.marketToggle.classList.add("is-open");
+    roles.marketToggle.setAttribute("aria-label", "Market open. Live at Gazebo Valley");
     roles.marketToggleTitle.textContent = "Market open";
     roles.marketToggleDetail.textContent = "Live at Gazebo Valley";
-    setHidden(roles.menuView, true);
-    setHidden(roles.marketView, false);
-    celebrateMarketOpen(root);
-    setStatus(roles, "Connected visitors enter the live market under the confetti.");
+    setHidden(roles.marketOwnerToast, false);
+    roles.marketOwnerLabel.textContent = "Market opened";
+    roles.marketOwnerLabel.classList.add("is-updated");
+    celebrateMarketOpen(roles.marketOwnerScreen);
+    setStatus(roles, "The owner receives confirmation that the market is open.");
   };
+
+  const scrollVisitorToMarket = () => {
+    roles.marketVisitorScroll.classList.add("is-scrolled");
+    roles.visitorClosedLabel.textContent = "Updating live…";
+    setStatus(roles, "The connected visitor’s page scrolls to Live at the Market automatically.");
+  };
+
+  const openVisitorMarket = () => {
+    roles.visitorMarketStatus.classList.add("is-open");
+    roles.visitorStatusTitle.textContent = "Open now";
+    roles.visitorStatusDetail.textContent = "at Gazebo Valley";
+    setHidden(roles.visitorProductGrid, false);
+    roles.marketVisitorLabel.textContent = "Updated automatically";
+    roles.marketVisitorLabel.classList.add("is-updated");
+    setStatus(roles, "The visitor’s market changes to open and the live product grid appears.");
+  };
+
+  const celebrateVisitor = () => {
+    setHidden(roles.marketVisitorToast, false);
+    celebrateMarketOpen(roles.marketVisitorScreen);
+    setStatus(roles, "The visitor receives the same market-open confirmation and celebration.");
+  };
+
+  const finishMarket = () => {
+    setHidden(roles.marketVisitorToast, true);
+    roles.marketOwnerLabel.textContent = "Open";
+    roles.marketVisitorLabel.textContent = "Open · synced live";
+    root.classList.add("is-complete");
+    setStatus(roles, "One owner tap has left both phones synchronized and open.");
+  };
+
   if (reducedMotion) {
-    openMarket();
+    openOwnerMarket();
+    setHidden(roles.marketOwnerToast, true);
+    scrollVisitorToMarket();
+    openVisitorMarket();
+    finishMarket();
     return;
   }
-  schedule(timers, 1200, () => {
+
+  schedule(timers, 1250, () => {
+    roles.marketTapCue.classList.add("is-visible");
     roles.marketToggle.classList.add("is-opening");
-    setStatus(roles, "The owner taps “Market closed”.");
+    setStatus(roles, "The owner taps “Market closed · Tap to open”.");
   });
-  schedule(timers, 2300, openMarket);
+  schedule(timers, 2050, () => roles.marketTapCue.classList.remove("is-visible"));
+  schedule(timers, 2350, openOwnerMarket);
+  schedule(timers, 3950, () => setHidden(roles.marketOwnerToast, true));
+  schedule(timers, 4100, scrollVisitorToMarket);
+  schedule(timers, 5650, openVisitorMarket);
+  schedule(timers, 6150, celebrateVisitor);
+  schedule(timers, 8350, finishMarket);
 }
 
 function createChapterController(root) {
